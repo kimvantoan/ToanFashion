@@ -1,0 +1,28 @@
+import {Route,  Routes } from "react-router-dom";
+import Home from "./pages/Home";
+import NotFound404 from "./pages/NotFound404";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Cart from "./pages/Cart";
+import ListProduct from "./pages/ListProduct";
+import ProductDetails from "./pages/ProductDetails";
+import Account from "./pages/Account";
+import Search from "./pages/Search";
+
+function App() {
+  return (
+      <Routes>
+        <Route exact path="/" element={<Home />} />
+        <Route  path="/login" element={<Login />} />
+        <Route  path="/register" element={<Register />} />
+        <Route  path="/cart" element={<Cart />} />
+        <Route  path="/collection" element={<ListProduct />} />
+        <Route  path="/product/:id" element={<ProductDetails />} />
+        <Route  path="/account" element={<Account />} />
+        <Route  path="/search" element={<Search />} />
+        <Route  path="*" element={<NotFound404 />} />
+      </Routes>
+  );
+}
+
+export default App;
