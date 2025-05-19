@@ -111,34 +111,7 @@ const WishlistContent = () => {
           </thead>
           <tbody>
             {userData.wishlist.map((item, index) => (
-              <tr key={index} >
-                <td className="py-4 pr-2">
-                  <button className="text-gray-400">
-                    <Close />
-                  </button>
-                </td>
-                <td className="py-4">
-                  <div className="flex items-center">
-                    <div className="w-16 h-16 bg-gray-100 mr-3 flex-shrink-0">
-                      <img
-                        src={`/placeholder.svg?height=64&width=64`}
-                        alt={item.name}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div>
-                      <p className="font-medium">{item.name}</p>
-                      <p className="text-sm text-gray-500">Màu: {item.color}</p>
-                    </div>
-                  </div>
-                </td>
-                <td className="py-4">{item.price}</td>
-                <td className="py-4">
-                  <button className="bg-[#c4123f] text-white px-4 py-2 rounded-md text-sm">
-                    Thêm vào giỏ
-                  </button>
-                </td>
-              </tr>
+              <WishItem key={index} item={item} />
             ))}
           </tbody>
         </table>
@@ -147,33 +120,7 @@ const WishlistContent = () => {
       {/* Mobile Wishlist View */}
       <div className="md:hidden space-y-6">
         {userData.wishlist.map((item, index) => (
-          <div
-            key={index}
-            className="p-6 shadow"
-            data-aos="fade-up"
-            data-aos-delay={index * 100}
-          >
-            <button className="text-gray-400">
-              <Close />
-            </button>
-            <div className="flex items-center mb-3">
-              <div className="w-16 h-16 bg-gray-100 mr-3 flex-shrink-0">
-                <img
-                  src={`/placeholder.svg?height=64&width=64`}
-                  alt={item.name}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div>
-                <p className="font-medium">{item.name}</p>
-                <p className="text-sm text-gray-500">Màu: {item.color}</p>
-                <p className="font-medium mt-1">{item.price}</p>
-              </div>
-            </div>
-            <button className="bg-[#c4123f] text-white w-full py-3 rounded-md text-sm">
-              Thêm vào giỏ
-            </button>
-          </div>
+          <WishItem key={index} item={item} />
         ))}
       </div>
     </div>
@@ -181,3 +128,66 @@ const WishlistContent = () => {
 };
 
 export default WishlistContent;
+
+const WishItem = ({ item }) => {
+  return (
+    <>
+      {/* wish item destop */}
+      <tr  className="hidden md:table-row">
+        <td className="py-4 pr-2">
+          <button className="text-gray-400">
+            <Close />
+          </button>
+        </td>
+        <td className="py-4">
+          <div className="flex items-center">
+            <div className="w-16 h-16 bg-gray-100 mr-3 flex-shrink-0">
+              <img
+                src={`/placeholder.svg?height=64&width=64`}
+                alt={item.name}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div>
+              <p className="font-medium">{item.name}</p>
+              <p className="text-sm text-gray-500">Màu: {item.color}</p>
+            </div>
+          </div>
+        </td>
+        <td className="py-4">{item.price}</td>
+        <td className="py-4">
+          <button className="bg-[#c4123f] text-white px-4 py-2 rounded-md text-sm">
+            Thêm vào giỏ
+          </button>
+        </td>
+      </tr>
+
+      {/* wish item mobile */}
+      <div
+        className="p-6 shadow md:hidden"
+        data-aos="fade-up"
+      >
+        <button className="text-gray-400">
+          <Close />
+        </button>
+        <div className="flex items-center mb-3">
+          <div className="w-16 h-16 bg-gray-100 mr-3 flex-shrink-0">
+            <img
+              src={`/placeholder.svg?height=64&width=64`}
+              alt={item.name}
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <div>
+            <p className="font-medium">{item.name}</p>
+            <p className="text-sm text-gray-500">Màu: {item.color}</p>
+            <p className="font-medium mt-1">{item.price}</p>
+          </div>
+        </div>
+        <button className="bg-[#c4123f] text-white w-full py-3 rounded-md text-sm">
+          Thêm vào giỏ
+        </button>
+      </div>
+    </>
+  );
+};
