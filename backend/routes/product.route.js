@@ -6,6 +6,8 @@ import {
   updateProduct,
   deleteProduct,
   deleteProductImage,
+  getProducts,
+  getProductBySlug,
 } from '../controllers/product.controller.js';
 
 import { protect, admin } from '../middlewares/auth.middleware.js';
@@ -13,6 +15,10 @@ import { protect, admin } from '../middlewares/auth.middleware.js';
 const router = express.Router();
 
 const upload = multer({ storage });
+
+router.get('/', getProducts);
+
+router.get('/:slug', getProductBySlug); 
 
 // Tạo product có upload nhiều ảnh
 router.post('/', protect, admin, upload.array('images', 10), createProduct);
