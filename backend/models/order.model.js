@@ -55,6 +55,11 @@ const orderSchema = new mongoose.Schema(
       default: "processing",
     },
     totalAmount: { type: Number, required: true },
+    voucher: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Voucher",
+      default: null,
+    },
   },
   { timestamps: true }
 );
