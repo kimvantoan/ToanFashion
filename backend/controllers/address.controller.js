@@ -1,4 +1,4 @@
-import User from '../models/User.js';
+import User from '../models/user.model.js';
 // [GET] /api/users/addresses
 export const getAddresses = async (req, res) => {
   const user = await User.findById(req.user._id);

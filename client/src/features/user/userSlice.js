@@ -6,7 +6,23 @@ export const login = createAsyncThunk('user/login', async (payload, { rejectWith
   try {
     const res = await userAPI.login(payload);
     return res.data;
+  } catch (error) {
+    const backendErrors = error.response?.data?.errors;
+      if (backendErrors) {
+        return rejectWithValue({ fieldErrors: backendErrors });
+      }
+      const message = error.response?.data?.message || 'Đăng nhập thất bại';
+      return rejectWithValue({ message });
+  }
+});
+
+export const loginStatus = createAsyncThunk('user/loginStatus', async (_, { rejectWithValue }) => {
+  try {
+    const res = await userAPI.loginStatus();
+    return res.data;
   } catch (err) {
+    console.log(err);
+    
     return rejectWithValue(err.response?.data || err.message);
   }
 });
@@ -15,8 +31,13 @@ export const register = createAsyncThunk('user/register', async (payload, { reje
   try {
     const res = await userAPI.register(payload);
     return res.data;
-  } catch (err) {
-    return rejectWithValue(err.response?.data || err.message);
+  } catch (error) {
+     const backendErrors = error.response?.data?.errors;
+      if (backendErrors) {
+        return rejectWithValue({ fieldErrors: backendErrors });
+      }
+      const message = error.response?.data?.message || 'Đăng ký thất bại';
+      return rejectWithValue({ message });
   }
 });
 
@@ -50,50 +71,86 @@ export const updateProfile = createAsyncThunk('user/updateProfile', async (paylo
 const userSlice = createSlice({
   name: 'user',
   initialState: {
-    profile: null,
-    status: '',
+    user: null,
     error: null,
+    loading: false,
+    fieldErrors: {},
+    status: '',
   },
   reducers: {
     clearUserState: (state) => {
       state.profile = null;
-      state.status = '';
       state.error = null;
+      state.loading = false;
     },
   },
   extraReducers: (builder) => {
     builder
       // Login
       .addCase(login.pending, (state) => {
-        state.status = 'loading';
+       state.loading = true;
         state.error = null;
+        state.fieldErrors = {};
       })
       .addCase(login.fulfilled, (state, action) => {
-        state.profile = action.payload;
+        state.loading = false;
+        state.user = action.payload;
         state.status = 'succeeded';
       })
       .addCase(login.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload.message || null;
+        state.fieldErrors = action.payload.fieldErrors || {};
         state.status = 'failed';
-        state.error = action.payload;
+      })
+      // Login Status
+      .addCase(loginStatus.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(loginStatus.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload;
+        state.status = 'succeeded'; 
+      })
+      .addCase(loginStatus.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload.message || null;
+        state.status = 'failed';  
       })
       // Register
       .addCase(register.pending, (state) => {
-        state.status = 'loading';
+        state.loading = true;
         state.error = null;
+        state.fieldErrors = {};
+
       })
       .addCase(register.fulfilled, (state, action) => {
-        state.profile = action.payload;
+        state.loading = false;
+        state.user = action.payload;
         state.status = 'succeeded';
       })
       .addCase(register.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload.message || null;
+        state.fieldErrors = action.payload.fieldErrors || {};
         state.status = 'failed';
-        state.error = action.payload;
       })
       // Logout
+      .addCase(logout.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.status = 'loading';
+        })
+      .addCase(logout.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload.message || null;
+        state.status = 'failed';
+      })
       .addCase(logout.fulfilled, (state) => {
-        state.profile = null;
         state.status = '';
         state.error = null;
+        state.loading = false;
       })
       // Fetch Profile
       .addCase(fetchUserProfile.pending, (state) => {

@@ -1,6 +1,5 @@
-
 import jwt from 'jsonwebtoken';
-import User from '../models/User.js';
+import User from '../models/user.model.js';
 
 // Kiểm tra đăng nhập
 export const protect = async (req, res, next) => {

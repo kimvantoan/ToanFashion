@@ -17,6 +17,7 @@ import AddressContent from "../components/AddressContent";
 import OrdersContent from "../components/OrdersContent";
 import WishlistContent from "../components/WishlistContent";
 import RootLayout from "../layout/RootLayout";
+import { useDispatch, useSelector } from "react-redux";
 // Mock data
 const userData = {
   name: "Sofia Havertz",
@@ -95,11 +96,13 @@ const userData = {
     },
   ],
 };
+import { logout } from "../features/user/userSlice";
+import { useNavigate } from "react-router";
 const Account = () => {
   const [activeTab, setActiveTab] = useState("account");
   const [isMobile, setIsMobile] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
+  const navigator = useNavigate();
   useEffect(() => {
     // Initialize AOS
     AOS.init({
@@ -119,6 +122,18 @@ const Account = () => {
       window.removeEventListener("resize", checkIfMobile);
     };
   }, []);
+
+  const dispatch = useDispatch();
+
+const handleLogout = async () => {
+  const resultAction = await dispatch(logout());
+
+  if (logout.fulfilled.match(resultAction)) {
+    window.location.href = "/login";
+  } else {
+    console.error("Logout failed:", resultAction.payload);
+  }
+};
 
   const renderContent = () => {
     switch (activeTab) {
@@ -209,7 +224,10 @@ const Account = () => {
               >
                 <Favorite className="mr-2" fontSize="small" /> Yêu Thích
               </button>
-              <button className="w-full text-left py-3 px-4 rounded-md flex items-center text-[#c4123f]">
+              <button
+                onClick={handleLogout}
+                className="w-full text-left py-3 px-4 rounded-md flex items-center text-[#c4123f]"
+              >
                 <Logout className="mr-2" fontSize="small" /> Đăng Xuất
               </button>
             </div>
@@ -286,7 +304,10 @@ const Account = () => {
                   >
                     <Favorite className="mr-2" fontSize="small" /> Yêu Thích
                   </button>
-                  <button className="w-full text-left p-3 flex items-center hover:bg-gray-50 text-[#c4123f]">
+                  <button
+                    onClick={handleLogout}
+                    className="w-full text-left p-3 flex items-center hover:bg-gray-50 text-[#c4123f]"
+                  >
                     <Logout className="mr-2" fontSize="small" /> Đăng Xuất
                   </button>
                 </div>

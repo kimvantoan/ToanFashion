@@ -1,6 +1,6 @@
 import express from 'express';
 import multer from 'multer';
-import { storage } from '../middlewares/upload.middleware.js'; // multer-storage-cloudinary
+import { storage } from '../middlewares/upload.middleware.js'; 
 import {
   createProduct,
   updateProduct,

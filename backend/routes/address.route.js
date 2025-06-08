@@ -4,7 +4,7 @@ import {
   addAddress,
   updateAddress,
   deleteAddress,
-} from '../controllers/user.controller.js';
+} from '../controllers/address.controller.js';
 import { protect } from '../middlewares/auth.middleware.js';
 
 const router = express.Router();

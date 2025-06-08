@@ -1,8 +1,9 @@
-const endpoints = {
+const API_ENDPOINTS = {
   auth: {
     login: '/user/login',
     register: '/user/register',
     logout: '/user/logout',
+    loginStatus: '/user/loginStatus',
   },
   user: {
     profile: '/user/profile',
@@ -48,4 +49,4 @@ const endpoints = {
   },
 };
 
-export default endpoints;
+export default API_ENDPOINTS;

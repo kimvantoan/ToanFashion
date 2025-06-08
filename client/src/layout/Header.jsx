@@ -36,6 +36,7 @@ import {
   Close as CloseIcon,
 } from "@mui/icons-material";
 import { Link, useNavigate } from "react-router";
+import { useSelector } from "react-redux";
 
 const Header = () => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -45,6 +46,7 @@ const Header = () => {
   const [expandedCategory, setExpandedCategory] = useState(null);
   const anchorRef = React.useRef(null);
   const navigator = useNavigate();
+  const { user } = useSelector((state) => state.user);
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
   };
@@ -85,53 +87,33 @@ const Header = () => {
   const categories = [
     {
       name: "SOFA - GHẾ THƯ GIÃN",
-      subcategories: ["Sofa", "Ghế thư giãn", "Ghế dài", "Đôn"],
     },
     {
       name: "BÀN",
-      subcategories: ["Bàn ăn", "Bàn làm việc", "Bàn cà phê", "Bàn bên"],
     },
     {
       name: "GHẾ",
-      subcategories: ["Ghế ăn", "Ghế làm việc", "Ghế quầy bar", "Ghế đẩu"],
     },
     {
       name: "GIƯỜNG NỆM",
-      subcategories: ["Giường", "Nệm", "Đầu giường", "Chân giường"],
     },
     {
       name: "CHĂN GA GỐI",
-      subcategories: ["Chăn", "Ga", "Gối", "Bộ chăn ga"],
     },
     {
       name: "TỦ KỆ",
-      subcategories: ["Tủ quần áo", "Tủ TV", "Kệ sách", "Tủ giày"],
     },
     {
       name: "NỘI THẤT VĂN PHÒNG",
-      subcategories: [
-        "Bàn làm việc",
-        "Ghế văn phòng",
-        "Tủ hồ sơ",
-        "Kệ văn phòng",
-      ],
     },
     {
       name: "TRANG TRÍ",
-      subcategories: ["Đèn", "Gương", "Tranh", "Thảm"],
     },
     {
       name: "NHÀ BẾP",
-      subcategories: ["Tủ bếp", "Bàn ăn", "Ghế ăn", "Phụ kiện bếp"],
     },
     {
       name: "PHÒNG TẮM",
-      subcategories: [
-        "Tủ lavabo",
-        "Gương",
-        "Kệ phòng tắm",
-        "Phụ kiện phòng tắm",
-      ],
     },
   ];
 
@@ -151,8 +133,15 @@ const Header = () => {
           startIcon={<PersonIcon />}
           className="justify-start normal-case"
           sx={{ borderColor: "#c9184a", color: "#c9184a" }}
+          onClick={() => {
+            if (user) {
+              navigator("/account");
+            } else {
+              navigator("/login");
+            }
+          }}
         >
-          Đăng nhập / Đăng ký
+          {user ? "Tài khoản của tôi" : "Đăng nhập"}
         </Button>
       </div>
 
@@ -162,23 +151,8 @@ const Header = () => {
             <ListItem disablePadding>
               <ListItemButton onClick={() => handleCategoryClick(index)}>
                 <ListItemText primary={category.name} />
-                {expandedCategory === index ? <ExpandLess /> : <ExpandMore />}
               </ListItemButton>
             </ListItem>
-            <Collapse
-              in={expandedCategory === index}
-              timeout="auto"
-              unmountOnExit
-            >
-              <List component="div" disablePadding>
-                {category.subcategories.map((subcat, subIndex) => (
-                  <ListItemButton key={subIndex} sx={{ pl: 4 }}>
-                    <ListItemText primary={subcat} />
-                  </ListItemButton>
-                ))}
-              </List>
-            </Collapse>
-            {index < categories.length - 1 && <Divider />}
           </React.Fragment>
         ))}
       </List>
@@ -249,52 +223,26 @@ const Header = () => {
               <Button
                 ref={anchorRef}
                 color="inherit"
-                onClick={handleToggle}
-                endIcon={<KeyboardArrowDownIcon />}
+                onClick={() => {
+                  if (user) {
+                    navigator("/account");
+                  } else {
+                    navigator("/login");
+                  }
+                }}
                 className="text-white"
               >
                 <PersonIcon className="mr-1" />
+                {user ? <span className="text-xs">Tài khoản của tôi</span> :
                 <span className="text-xs">
                   Đăng nhập / Đăng ký
-                  <br />
-                  <span className="text-xs">Tài khoản của tôi</span>
                 </span>
+                }
               </Button>
-              <Popper
-                open={open}
-                anchorEl={anchorRef.current}
-                role={undefined}
-                transition
-                disablePortal
-              >
-                {({ TransitionProps, placement }) => (
-                  <Grow
-                    {...TransitionProps}
-                    style={{
-                      transformOrigin:
-                        placement === "bottom" ? "center top" : "center bottom",
-                    }}
-                  >
-                    <Paper>
-                      <ClickAwayListener onClickAway={handleClose}>
-                        <MenuList autoFocusItem={open}>
-                          <MenuItem onClick={()=>navigator("/login")}>
-                            Đăng nhập
-                          </MenuItem>
-                          <MenuItem onClick={()=>navigator("/register")}>Đăng ký</MenuItem>
-                          <MenuItem onClick={()=>navigator("/account")}>
-                            Thông tin tài khoản
-                          </MenuItem>
-                        </MenuList>
-                      </ClickAwayListener>
-                    </Paper>
-                  </Grow>
-                )}
-              </Popper>
             </div>
 
             <IconButton onClick={()=>navigator('/cart')} color="inherit" aria-label="cart" className="relative">
-              <Badge badgeContent={1} color="error">
+              <Badge badgeContent={5}>
                 <ShoppingCartIcon />
               </Badge>
               <span className="ml-1 text-xs text-white hidden md:inline">

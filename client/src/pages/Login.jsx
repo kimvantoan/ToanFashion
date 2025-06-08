@@ -1,10 +1,53 @@
 import React, { useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import RootLayout from "../layout/RootLayout";
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "../features/user/userSlice";
+import { useEffect } from "react";
+import { Button } from "@mui/material";
+import { useRef } from "react";
 
 const Login = () => {
-      const [showPassword, setShowPassword] = useState(false);
-      const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { fieldErrors, status, loading } = useSelector((state) => state.user);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    dispatch(login({ email, password }));
+  };
+  useEffect(() => {
+    if (fieldErrors) {
+      if (fieldErrors.email && emailRef.current) {
+        emailRef.current.focus();
+      } else if (fieldErrors.password && passwordRef.current) {
+        passwordRef.current.focus();
+      }
+    }
+  }, [fieldErrors]);
+  const handlechange = (e) => {
+    const { name, value } = e.target;
+    switch (name) {
+      case "email":
+        setEmail(value);
+        break;
+      case "password":
+        setPassword(value);
+        break;
+      default:
+        break;
+    }
+  };
+  useEffect(() => {
+    if (status === "succeeded") {
+      navigate("/");
+    }
+  }, [status, navigate]);
+
   return (
     <RootLayout>
       <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
@@ -23,15 +66,23 @@ const Login = () => {
         </div>
 
         <div className="p-6">
-          <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
+          <form onSubmit={handleSubmit}>
             <div className="space-y-2">
               <div className="relative">
                 <input
+                  ref={emailRef}
+                  autoFocus
                   type="email"
                   placeholder="Email"
                   className="w-full rounded bg-gray-100 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
                   required
+                  name="email"
+                  value={email}
+                  onChange={handlechange}
                 />
+              </div>
+              <div className="min-h-[20px]">
+                <p className="text-red-500 text-[12px]">{fieldErrors.email}</p>
               </div>
             </div>
             <div className="space-y-2">
@@ -41,6 +92,11 @@ const Login = () => {
                   placeholder="Mật khẩu"
                   className="w-full rounded bg-gray-100 px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-red-500"
                   required
+                  ref={passwordRef}
+                  name="password"
+                  value={password}
+                  onChange={handlechange}
+                  minLength={6}
                 />
                 <button
                   type="button"
@@ -82,6 +138,11 @@ const Login = () => {
                   )}
                 </button>
               </div>
+              <div className="min-h-[20px]">
+                <p className="text-red-500 text-[12px]">
+                  {fieldErrors.password}
+                </p>
+              </div>
             </div>
             <div className="text-xs text-gray-500">
               This site is protected by reCAPTCHA and the Google{" "}
@@ -94,15 +155,29 @@ const Login = () => {
               </a>{" "}
               apply.
             </div>
-            <button
+            <Button
               type="submit"
-              className="w-full rounded bg-red-600 px-4 py-2 font-medium text-white transition-colors hover:bg-red-700"
+              fullWidth
+              sx={{
+                borderRadius: 1,
+                backgroundColor: "#dc2626",
+                px: 4,
+                fontWeight: 500,
+                color: "white",
+                textTransform: "none",
+                transition: "background-color 0.2s ease-in-out",
+                "&:hover": {
+                  backgroundColor: "#b91c1c",
+                },
+              }}
+              loading={loading}
+              variant="contained"
             >
               ĐĂNG NHẬP
-            </button>
+            </Button>
             <div className="mt-4 text-center text-sm">
               <span>Bạn chưa có tài khoản? </span>
-              <Link to={'/register'} className="text-blue-500 hover:underline">
+              <Link to={"/register"} className="text-blue-500 hover:underline">
                 Đăng ký
               </Link>
             </div>

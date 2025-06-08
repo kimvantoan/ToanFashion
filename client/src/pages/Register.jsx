@@ -1,30 +1,85 @@
 import React, { useState } from "react";
 import RootLayout from "../layout/RootLayout";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { register } from "../features/user/userSlice";
+import { useEffect } from "react";
+import { Button } from "@mui/material";
+import { useRef } from "react";
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
+  const { fieldErrors, status,loading } = useSelector((state) => state.user);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const handlechange = (e) => {
+    const { name, value } = e.target;
+    switch (name) {
+      case "username":
+        setUsername(value);
+        break;
+      case "email":
+        setEmail(value);
+        break;
+      case "password":
+        setPassword(value);
+        break;
+      case "confirmPassword":
+        setConfirmPassword(value);
+        break;
+      default:
+        break;
+    }
+  };
+
+  useEffect(() => {
+    if (fieldErrors) {
+      if (fieldErrors.email && emailRef.current) {
+        emailRef.current.focus();
+      } else if (fieldErrors.password && passwordRef.current) {
+        passwordRef.current.focus();
+      }
+    }
+  }, [fieldErrors]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    dispatch(register({ username, email, password, confirmPassword }));
+  };
+  useEffect(() => {
+    if (status === "succeeded") {
+      navigate("/");
+    }
+  }, [status, navigate]);
   return (
     <RootLayout>
       <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
         <div className="flex border-b border-gray-200">
           <Link
             to={"/login"}
-            className={`flex-1 px-4 py-3 text-center font-medium transition-colorstext-gray-500 hover:text-gray-700}`}
+            className={`flex-1 px-4 py-3 text-center font-medium transition-colors text-gray-500 hover:text-gray-700`}
           >
             Đăng nhập
           </Link>
           <button
-            className={`flex-1 px-4 py-3 text-center font-medium transition-colors border-b-2 border-black text-black  }`}
+            className={`flex-1 px-4 py-3 text-center font-medium transition-colors border-b-2 border-black text-black`}
           >
             Đăng ký
           </button>
         </div>
 
         <div className="p-6">
-          <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
+          <form onSubmit={handleSubmit}>
             <div className="space-y-2">
               <div className="relative">
                 <input
@@ -32,7 +87,14 @@ const Register = () => {
                   placeholder="Tên người dùng"
                   className="w-full rounded bg-gray-100 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
                   required
+                  autoFocus
+                  name="username"
+                  value={username}
+                  onChange={handlechange}
                 />
+              </div>
+              <div className="min-h-[20px]">
+                <p className="text-red-500 text-[12px]"></p>
               </div>
             </div>
             <div className="space-y-2">
@@ -40,9 +102,16 @@ const Register = () => {
                 <input
                   type="email"
                   placeholder="Email"
+                  ref={emailRef}
                   className="w-full rounded bg-gray-100 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
                   required
+                  name="email"
+                  value={email}
+                  onChange={handlechange}
                 />
+              </div>
+              <div className="min-h-[20px]">
+                <p className="text-red-500 text-[12px]">{fieldErrors.email}</p>
               </div>
             </div>
             <div className="space-y-2">
@@ -52,6 +121,11 @@ const Register = () => {
                   placeholder="Mật khẩu"
                   className="w-full rounded bg-gray-100 px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-red-500"
                   required
+                  name="password"
+                  value={password}
+                  ref={passwordRef} 
+                  onChange={handlechange}
+                  minLength={6}
                 />
                 <button
                   type="button"
@@ -93,6 +167,11 @@ const Register = () => {
                   )}
                 </button>
               </div>
+              <div className="min-h-[20px]">
+                <p className="text-red-500 text-[12px]">
+                  {fieldErrors.password}
+                </p>
+              </div>
             </div>
             <div className="space-y-2">
               <div className="relative">
@@ -101,6 +180,9 @@ const Register = () => {
                   placeholder="Nhập lại mật khẩu"
                   className="w-full rounded bg-gray-100 px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-red-500"
                   required
+                  name="confirmPassword"
+                  value={confirmPassword}
+                  onChange={handlechange}
                 />
                 <button
                   type="button"
@@ -142,6 +224,9 @@ const Register = () => {
                   )}
                 </button>
               </div>
+              <div className="min-h-[20px]">
+                <p className="text-red-500 text-[12px]"></p>
+              </div>
             </div>
             <div className="text-xs text-gray-500">
               This site is protected by reCAPTCHA and the Google{" "}
@@ -154,18 +239,29 @@ const Register = () => {
               </a>{" "}
               apply.
             </div>
-            <button
+            <Button
               type="submit"
-              className="w-full rounded bg-red-600 px-4 py-2 font-medium text-white transition-colors hover:bg-red-700"
+              fullWidth
+              sx={{
+                borderRadius: 1,
+                backgroundColor: "#dc2626",
+                px: 4,
+                fontWeight: 500,
+                color: "white",
+                textTransform: "none",
+                transition: "background-color 0.2s ease-in-out",
+                "&:hover": {
+                  backgroundColor: "#b91c1c",
+                },
+              }}
+              loading={loading}
+              variant="contained"
             >
-              ĐĂNG KÝ
-            </button>
+              {"ĐĂNG KÝ"}
+            </Button>
             <div className="mt-4 text-center text-sm">
               <span>Bạn đã có tài khoản? </span>
-              <Link to={'/login'}
-                type="button"
-                className="text-blue-500 hover:underline"
-              >
+              <Link to={"/login"} className="text-blue-500 hover:underline">
                 Đăng nhập
               </Link>
             </div>

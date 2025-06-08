@@ -1,14 +1,21 @@
-import User from '../models/User.js';
-import generateToken from '../utils/generateToken.js';
+import User from "../models/user.model.js";
+import generateToken from "../utils/generateToken.js";
 
 // [POST] /api/users/register
 export const registerUser = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { username, email, password, confirmPassword } = req.body;
 
     const userExists = await User.findOne({ email });
     if (userExists)
-      return res.status(400).json({ message: 'Email đã được sử dụng' });
+      return res
+        .status(400)
+        .json({ errors: { email: "Email đã được sử dụng" } });
+
+    if (password !== confirmPassword)
+      return res
+        .status(400)
+        .json({ errors: { password: "Mật khẩu không trùng khớp" } });
 
     const user = await User.create({ username, email, password });
 
@@ -21,7 +28,7 @@ export const registerUser = async (req, res) => {
       role: user.role,
     });
   } catch (err) {
-    res.status(500).json({ message: 'Đăng ký thất bại', error: err.message });
+    res.status(500).json({ message: "Đăng ký thất bại", error: err.message });
   }
 };
 
@@ -32,11 +39,15 @@ export const loginUser = async (req, res) => {
 
     const user = await User.findOne({ email });
     if (!user)
-      return res.status(401).json({ message: 'Email hoặc mật khẩu không đúng' });
+      return res
+        .status(400)
+        .json({ errors: { email: "Email chưa được đăng kí" } });
 
     const isMatch = await user.matchPassword(password);
     if (!isMatch)
-      return res.status(401).json({ message: 'Email hoặc mật khẩu không đúng' });
+      return res
+        .status(400)
+        .json({ errors: { password: "Mật khẩu không đúng" } });
 
     generateToken(res, user._id);
 
@@ -47,28 +58,41 @@ export const loginUser = async (req, res) => {
       role: user.role,
     });
   } catch (err) {
-    res.status(500).json({ message: 'Đăng nhập thất bại', error: err.message });
+    res.status(500).json({ message: "Đăng nhập thất bại", error: err.message });
   }
 };
 
+export const loginStatus = (req, res) => {
+  if (req.user) {
+    res.json({
+      _id: req.user._id,
+      username: req.user.username,
+      email: req.user.email,
+      role: req.user.role,
+    });
+  } else {
+    res.json({ message: "Không có người dùng đăng nhập" });
+  }
+}
 // [POST] /api/users/logout
 export const logoutUser = (req, res) => {
-  res.clearCookie('jwt', {
+  res.clearCookie("jwt", {
     httpOnly: true,
-    sameSite: 'strict',
-    secure: process.env.NODE_ENV === 'production',
+    sameSite: "strict",
+    secure: process.env.NODE_ENV === "production",
   });
-  res.json({ message: 'Đăng xuất thành công' });
+  res.json({ message: "Đăng xuất thành công" });
 };
 
 // [GET] /api/users/profile
 export const getUserProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user._id).select('-password');
-    if (!user) return res.status(404).json({ message: 'Không tìm thấy người dùng' });
+    const user = await User.findById(req.user._id).select("-password");
+    if (!user)
+      return res.status(404).json({ message: "Không tìm thấy người dùng" });
     res.json(user);
   } catch (err) {
-    res.status(500).json({ message: 'Lỗi server', error: err.message });
+    res.status(500).json({ message: "Lỗi server", error: err.message });
   }
 };
 
@@ -76,7 +100,8 @@ export const getUserProfile = async (req, res) => {
 export const updateUserProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
-    if (!user) return res.status(404).json({ message: 'Không tìm thấy người dùng' });
+    if (!user)
+      return res.status(404).json({ message: "Không tìm thấy người dùng" });
 
     user.username = req.body.username || user.username;
     user.email = req.body.email || user.email;
@@ -91,6 +116,6 @@ export const updateUserProfile = async (req, res) => {
       role: updatedUser.role,
     });
   } catch (err) {
-    res.status(500).json({ message: 'Cập nhật thất bại', error: err.message });
+    res.status(500).json({ message: "Cập nhật thất bại", error: err.message });
   }
 };
