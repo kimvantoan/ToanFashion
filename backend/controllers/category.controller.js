@@ -1,6 +1,8 @@
 import Category from '../models/category.model.js';
 import slugify from 'slugify';
 import cloudinary from '../config/cloudinary.js';
+import fs from 'fs';
+
 // [GET] /api/categories
 export const getCategories = async (req, res) => {
   const categories = await Category.find({});
@@ -19,10 +21,19 @@ export const createCategory = async (req, res) => {
   try {
     const { name, description } = req.body;
 
-    const image = req.file ? {
-      url: req.file.path,
-      public_id: req.file.filename
-    } : null;
+    if (!name || typeof name !== "string") {
+      return res.status(400).json({ message: "Tên danh mục là bắt buộc" });
+    }
+
+    let image = null;
+    console.log('req.file', req.file); // sẽ có .path, .filename, .url, .public_id
+
+    if (req.file) {
+      image = {
+        url: req.file.path, // URL ảnh trên Cloudinary
+        public_id: req.file.filename // Tên file (chính là public_id trong Cloudinary)
+      };
+    }
 
     const slug = slugify(name, { lower: true, strict: true });
 
@@ -36,9 +47,13 @@ export const createCategory = async (req, res) => {
   }
 };
 
+
+// [PUT] /api/categories/:id
 export const updateCategory = async (req, res) => {
   try {
     const { name, description } = req.body;
+    console.log(req.body);
+    
     const category = await Category.findById(req.params.id);
     if (!category) return res.status(404).json({ message: 'Không tìm thấy category' });
 
@@ -68,16 +83,19 @@ export const updateCategory = async (req, res) => {
   }
 };
 
+// [DELETE] /api/categories/:id
 export const deleteCategory = async (req, res) => {
   try {
     const category = await Category.findById(req.params.id);
+    console.log('category', category);
+    
     if (!category) return res.status(404).json({ message: 'Không tìm thấy category' });
 
     if (category.image?.public_id) {
       await cloudinary.uploader.destroy(category.image.public_id);
     }
 
-    await category.remove();
+    await category.deleteOne();
     res.json({ message: 'Xóa category thành công' });
   } catch (err) {
     console.error(err);

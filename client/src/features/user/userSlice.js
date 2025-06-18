@@ -33,6 +33,8 @@ export const register = createAsyncThunk('user/register', async (payload, { reje
     return res.data;
   } catch (error) {
      const backendErrors = error.response?.data?.errors;
+     console.log('Register error:', error);
+     
       if (backendErrors) {
         return rejectWithValue({ fieldErrors: backendErrors });
       }

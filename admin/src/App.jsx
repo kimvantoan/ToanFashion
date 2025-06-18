@@ -1,0 +1,24 @@
+import { Route, Routes } from "react-router-dom"
+import Login from "./pages/login"
+import Dashboard from "./pages/Dashboard"
+import Category from "./pages/Category"
+import Order from "./pages/order/Order"
+import AddProduct from "./pages/product/AddProduct"
+import Products from "./pages/product/Products"
+import OrderDetail from "./pages/order/OrderDetail"
+
+function App() {
+  return (
+    <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/categories" element={<Category />} />
+        <Route path="/orders" element={<Order />} />
+        <Route path="/orders/:id" element={<OrderDetail />} />
+        <Route path="/products" element={<Products />} />
+        <Route path="/add-product" element={<AddProduct />} />
+    </Routes>
+  )
+}
+
+export default App

@@ -62,6 +62,35 @@ export const loginUser = async (req, res) => {
   }
 };
 
+export const loginAdmin = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ email, role: "admin" });
+    if (!user)
+      return res
+        .status(400)
+        .json({ errors: { email: "Email không chính xác" } });
+
+    const isMatch = await user.matchPassword(password);
+    if (!isMatch)
+      return res
+        .status(400)
+        .json({ errors: { password: "Mật khẩu không đúng" } });
+
+    generateToken(res, user._id);
+
+    res.json({
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+      role: user.role,
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Đăng nhập thất bại", error: err.message });
+  }
+}
+
 export const loginStatus = (req, res) => {
   if (req.user) {
     res.json({

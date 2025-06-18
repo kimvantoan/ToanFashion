@@ -1,6 +1,6 @@
 import express from 'express';
 import multer from 'multer';
-import { storage } from '../middlewares/upload.middleware.js';
+import upload from '../middlewares/upload.middleware.js';
 import {
   createCategory,
   updateCategory,
@@ -9,7 +9,6 @@ import {
 } from '../controllers/category.controller.js';
 import { protect, admin } from '../middlewares/auth.middleware.js';
 
-const upload = multer({ storage });
 const router = express.Router();
 
 router.get('/', protect, getCategories);
