@@ -211,6 +211,8 @@ const Category = () => {
                 value={form.name}
                 onChange={(e) => handleFormChange("name", e.target.value)}
                 variant="outlined"
+                required
+                autoFocus
               />
               <TextField
                 fullWidth
@@ -221,6 +223,7 @@ const Category = () => {
                 }
                 variant="outlined"
                 multiline
+                required
                 rows={3}
               />
               <div>

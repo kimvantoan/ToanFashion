@@ -1,15 +1,15 @@
-import React from "react";
-import { useState } from "react";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getCategories } from "../../features/category/categorySlice";
-import { createProduct } from "../../features/product/productSlice";
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import {
+  getProductById,
+  updateProduct,
+} from "../../features/product/productSlice";
+import { useNavigate, useParams } from "react-router-dom";
 import slugify from "slugify";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import Button from '@mui/material/Button';
-import { toast } from "react-toastify";
 
 const BRANDS = [
   { _id: "nike", name: "Nike" },
@@ -17,27 +17,33 @@ const BRANDS = [
   { _id: "puma", name: "Puma" },
   { _id: "mlb", name: "MLB" },
 ];
-const AddProduct = () => {
-  const [hasVariants, setHasVariants] = useState(false);
-  const [variants, setVariants] = useState([
-    {
-      id: "1",
-      color: "",
-      isOpen: true,
-      selectedSizes: [],
-      sizeStocks: {},
-    },
-  ]);
 
+const EditProduct = () => {
+  const { id } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const fileInputRef = useRef(null);
+  // States giống AddProduct
+  const [hasVariants, setHasVariants] = useState(false);
+  const [variants, setVariants] = useState([]);
+  const [images, setImages] = useState([]);
+  const [productName, setProductName] = useState("");
+  const [productDescription, setProductDescription] = useState("");
+  const [productSlug, setProductSlug] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedBrand, setSelectedBrand] = useState("");
+  const [basePrice, setBasePrice] = useState("");
+  const [discountPrice, setDiscountPrice] = useState("");
+
+  // Lấy categories và product
   useEffect(() => {
     dispatch(getCategories());
-  }, [dispatch]);
+    dispatch(getProductById(id));
+  }, [dispatch, id]);
+
   const { categories } = useSelector((state) => state.category);
-  const { loading, error } = useSelector((state) => state.product);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [images, setImages] = useState([]);
-  const fileInputRef = React.useRef(null);
+  const { product,loading } = useSelector((state) => state.product);
+  // Xử lý chọn file ảnh mới
   const handleFileSelect = (e) => {
     const files = Array.from(e.target.files || []);
     const imageFiles = files.filter((file) => file.type.startsWith("image/"));
@@ -46,9 +52,12 @@ const AddProduct = () => {
       file,
       preview: URL.createObjectURL(file),
       featured: false,
+      isOld: false,
     }));
     setImages((prev) => [...prev, ...newImages]);
   };
+
+  // Kéo thả ảnh
   const handleDrop = (e) => {
     e.preventDefault();
     const files = Array.from(e.dataTransfer.files);
@@ -58,15 +67,21 @@ const AddProduct = () => {
       file,
       preview: URL.createObjectURL(file),
       featured: false,
+      isOld: false,
     }));
     setImages((prev) => [...prev, ...newImages]);
   };
+
   const handleDragOver = (e) => {
     e.preventDefault();
   };
+
+  // Xoá ảnh (cả mới và cũ)
   const removeImage = (id) => {
     setImages((prev) => prev.filter((img) => img.id !== id));
   };
+
+  // Đặt ảnh featured
   const setFeaturedImage = (id) => {
     setImages((prev) =>
       prev.map((img) => ({
@@ -75,20 +90,16 @@ const AddProduct = () => {
       }))
     );
   };
+
+  // Đổi vị trí ảnh
   const reorderImages = (fromIndex, toIndex) => {
     const newImages = [...images];
     const [movedImage] = newImages.splice(fromIndex, 1);
     newImages.splice(toIndex, 0, movedImage);
     setImages(newImages);
   };
-  const [productName, setProductName] = useState("");
-  const [productDescription, setProductDescription] = useState("");
-  const [productSlug, setProductSlug] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedBrand, setSelectedBrand] = useState("");
-  const [basePrice, setBasePrice] = useState(""); // Thêm state cho base price
-  const [discountPrice, setDiscountPrice] = useState(""); // Thêm state cho discount price
 
+  // Chọn size cho variant
   const handleSizeSelect = (variantId, size) => {
     setVariants((prevVariants) =>
       prevVariants.map((variant) => {
@@ -111,41 +122,7 @@ const AddProduct = () => {
     );
   };
 
-  const handleCreate = (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    const formattedVariants = variants.map((variant) => ({
-      color: variant.color,
-      sizes: variant.selectedSizes.map((size) => ({
-        size,
-        stock: variant.sizeStocks[size] || 0,
-      })),
-    }));
-
-    const formData = new FormData();
-    formData.append("name", productName);
-    formData.append("description", productDescription);
-    formData.append("slug", productSlug);
-    formData.append("category", selectedCategory);
-    formData.append("variants", JSON.stringify(formattedVariants));
-    images.forEach((img) => {
-      formData.append("images", img.file);
-    });
-    formData.append("brand", selectedBrand);
-    formData.append("price", basePrice);
-    formData.append("discount", discountPrice);
-    dispatch(createProduct(formData))
-      .unwrap()
-      .then(() => {
-        toast.success("Tạo sản phẩm thành công!");
-        setIsSubmitting(false);
-        navigate("/products")
-      })
-      .catch((err) => {
-        toast.error(err?.message || "Tạo sản phẩm thất bại!");
-        setIsSubmitting(false);
-      });
-  };
+  // Đổi số lượng tồn kho cho size
   const handleStockChange = (variantId, size, value) => {
     const stockValue = parseInt(value) || 0;
     setVariants((prevVariants) =>
@@ -162,6 +139,8 @@ const AddProduct = () => {
       )
     );
   };
+
+  // Thêm variant mới
   const addVariant = () => {
     const newVariant = {
       id: Math.random().toString(36).substring(7),
@@ -172,9 +151,13 @@ const AddProduct = () => {
     };
     setVariants((prev) => [...prev, newVariant]);
   };
+
+  // Xoá variant
   const removeVariant = (variantId) => {
     setVariants((prev) => prev.filter((variant) => variant.id !== variantId));
   };
+
+  // Đóng/mở variant
   const toggleVariant = (variantId) => {
     setVariants((prev) =>
       prev.map((variant) =>
@@ -185,12 +168,77 @@ const AddProduct = () => {
     );
   };
 
+  // Đổi tên sản phẩm và tự động sinh slug
   const handleNameChange = (e) => {
     const name = e.target.value;
     setProductName(name);
     setProductSlug(slugify(name, { lower: true, strict: true }));
   };
-  const navigate = useNavigate();
+  // Fill dữ liệu khi có product
+  useEffect(() => {
+    if (product) {
+      setProductName(product.name || "");
+      setProductDescription(product.description || "");
+      setProductSlug(product.slug || "");
+      setSelectedCategory(product.category._id || "");
+      setSelectedBrand(product.brand || "");
+      setBasePrice(product.price || "");
+      setDiscountPrice(product.discount || "");
+      setHasVariants(product.variants && product.variants.length > 0);
+      setVariants(
+        product.variants?.map((v, idx) => ({
+          id: idx + "",
+          color: v.color,
+          isOpen: true,
+          selectedSizes: v.sizes?.map((s) => s.size) || [],
+          sizeStocks:
+            v.sizes?.reduce((acc, s) => ({ ...acc, [s.size]: s.stock }), {}) ||
+            {},
+        })) || []
+      );
+      setImages(
+        (product.images || []).map((img, idx) => ({
+          id: idx + "",
+          file: null,
+          preview: img.url || img, // tuỳ backend trả về
+          featured: img.featured || false,
+          isOld: true,
+        }))
+      );
+    }
+  }, [product]);
+
+  // Hàm submit update
+  const handleUpdate = (e) => {
+    e.preventDefault();
+    const formattedVariants = variants.map((variant) => ({
+      color: variant.color,
+      sizes: variant.selectedSizes.map((size) => ({
+        size,
+        stock: variant.sizeStocks[size] || 0,
+      })),
+    }));
+
+    const formData = new FormData();
+    formData.append("name", productName);
+    formData.append("description", productDescription);
+    formData.append("slug", productSlug);
+    formData.append("category", selectedCategory);
+    formData.append("variants", JSON.stringify(formattedVariants));
+    images.forEach((img) => {
+      if (!img.isOld && img.file) formData.append("images", img.file);
+    });
+    formData.append("brand", selectedBrand);
+    formData.append("price", basePrice);
+    formData.append("discount", discountPrice);
+    // Có thể cần gửi danh sách ảnh cũ để giữ lại
+    formData.append(
+      "oldImages",
+      JSON.stringify(images.filter((i) => i.isOld).map((i) => i.preview))
+    );
+    dispatch(updateProduct({ id, data: formData }));
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-6">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -204,14 +252,19 @@ const AddProduct = () => {
               <span>Back</span>
             </button>
             <h1 className="ml-4 text-2xl font-semibold text-gray-900">
-              Add Product
+              Edit Product
             </h1>
           </div>
           <div className="flex space-x-3">
             <button className="px-4 py-2 border border-gray-300 rounded-button text-gray-700 bg-white hover:bg-gray-50 cursor-pointer whitespace-nowrap">
               Cancel
             </button>
-            <Button variant="contained" loading={loading} onClick={handleCreate} className="px-4 py-2 bg-blue-600 text-white rounded-button hover:bg-blue-700 cursor-pointer whitespace-nowrap">
+            <Button
+              variant="contained"
+              loading={loading}
+              onClick={handleUpdate}
+              className="px-4 py-2 bg-blue-600 text-white rounded-button hover:bg-blue-700 cursor-pointer whitespace-nowrap"
+            >
               Save
             </Button>
           </div>
@@ -582,9 +635,20 @@ const AddProduct = () => {
             </div>
           </div>
         </div>
+        <div className="mt-6 flex justify-end space-x-3">
+          <button className="px-4 py-2 border border-gray-300 rounded-button text-gray-700 bg-white hover:bg-gray-50 cursor-pointer whitespace-nowrap">
+            Cancel
+          </button>
+          <button
+            onClick={handleUpdate}
+            className="px-4 py-2 bg-blue-600 text-white rounded-button hover:bg-blue-700 cursor-pointer whitespace-nowrap"
+          >
+            Save
+          </button>
+        </div>
       </div>
     </div>
   );
 };
 
-export default AddProduct;
+export default EditProduct;

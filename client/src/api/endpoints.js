@@ -1,3 +1,4 @@
+
 const API_ENDPOINTS = {
   auth: {
     login: '/user/login',
@@ -10,8 +11,10 @@ const API_ENDPOINTS = {
     updateProfile: '/user/profile/update',
   },
   product: {
-    list: '/product',
-    getProductBySlug: (slug) => `/product/${slug}`,
+    getAll: '/product',
+    getNewProducts: '/product/new',
+    getProductBySlug: (slug) => `/product/slug/${slug}`,
+    getProductsByCategory: (categorySlug) => `/product/category/${categorySlug}`,
   },
   cart: {
     get: '/cart',
@@ -33,7 +36,7 @@ const API_ENDPOINTS = {
   },
   category:	 {
     getAll: '/category',
-    getBySlug: (slug) => `/category',/${slug}`,
+    getBySlug: (slug) => `/category/slug/${slug}`,
     create: '/category',
     update: (id) => `/category/${id}`,
     delete: (id) => `/category/${id}`,

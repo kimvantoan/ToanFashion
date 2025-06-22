@@ -11,19 +11,12 @@ const Product_item = ({ product }) => {
     >
       <div className="relative">
         <img
-          src={product.image || "/placeholder.svg"}
+          src={product.images[0]?.url || "/placeholder.svg"}
           alt={product.name}
           className="w-full h-40 object-contain p-2"
           data-aos="zoom-in"
         />
-        {product.discount > 0 && (
-          <div
-            className="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full"
-            data-aos="zoom-in"
-          >
-            -{product.discount}%
-          </div>
-        )}
+       
         <IconButton
           className="absolute top-2 left-2 bg-white shadow-sm p-1"
           size="small"
@@ -47,11 +40,11 @@ const Product_item = ({ product }) => {
         </h3>
         <div className="flex items-baseline gap-2" data-aos="fade-right">
           <span className="text-rose-600 font-bold">
-            {formatPrice(product.price)}
+            {formatPrice(product.discount)}
           </span>
-          {product.originalPrice > product.price && (
+          {product.price > product.discount && (
             <span className="text-gray-400 text-xs line-through">
-              {formatPrice(product.originalPrice)}
+              {formatPrice(product.price)}
             </span>
           )}
         </div>

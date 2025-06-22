@@ -14,6 +14,19 @@ export const getCategories = createAsyncThunk(
   }
 );
 
+export const getCategoryById = createAsyncThunk(
+  "category/getCategoryById",
+  async (id, { rejectWithValue }) => {
+    try {
+      const res = await categoryAPI.getCategoryById(id);
+      return res.data;
+    } catch (error) {
+      console.error("Error fetching category by ID:", error);
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
 export const createCategory = createAsyncThunk(
   "category/createCategory",
   async (payload, { rejectWithValue }) => {

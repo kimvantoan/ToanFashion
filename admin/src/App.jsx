@@ -6,10 +6,13 @@ import Order from "./pages/order/Order"
 import AddProduct from "./pages/product/AddProduct"
 import Products from "./pages/product/Products"
 import OrderDetail from "./pages/order/OrderDetail"
-
+import EditProduct from "./pages/product/EditProduct"
+import { ToastContainer } from "react-toastify"
+import 'react-toastify/dist/ReactToastify.css'
 function App() {
   return (
-    <Routes>
+    <>
+      <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Dashboard />} />
         <Route path="/categories" element={<Category />} />
@@ -17,7 +20,10 @@ function App() {
         <Route path="/orders/:id" element={<OrderDetail />} />
         <Route path="/products" element={<Products />} />
         <Route path="/add-product" element={<AddProduct />} />
-    </Routes>
+        <Route path="/product/:id" element={<EditProduct />} />
+      </Routes>
+      <ToastContainer />
+    </>
   )
 }
 

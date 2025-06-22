@@ -5,14 +5,15 @@ import {
   createCategory,
   updateCategory,
   deleteCategory,
-  getCategories
+  getCategories,
+  getCategoryBySlug
 } from '../controllers/category.controller.js';
 import { protect, admin } from '../middlewares/auth.middleware.js';
 
 const router = express.Router();
 
-router.get('/', protect, getCategories);
-router.get('/:slug', protect, getCategories);  
+router.get('/', getCategories);
+router.get('/slug/:slug', getCategoryBySlug);  
 router.post('/', protect, admin, upload.single('image'), createCategory);
 router.put('/:id', protect, admin, upload.single('image'), updateCategory);
 router.delete('/:id', protect, admin, deleteCategory);

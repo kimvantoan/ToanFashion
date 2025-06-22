@@ -34,7 +34,7 @@ const Cart = () => {
       name: "Thảm Phòng Tắm Nhựa TPE Hoa Tiết Cánh Hoa XING",
       price: 169000,
       image:
-        "https://product.hstatic.net/200000796751/product/rosabella_decoration_cushion_baya_2001469_2_78cbaab9d6f54098a7466357d9c2220d_medium.jpg",
+        "https://product.hstatic.net/200000796751/product/rosabella_decoration_cushion_TOAN FASHION_2001469_2_78cbaab9d6f54098a7466357d9c2220d_medium.jpg",
       quantity: 1,
     },
     {

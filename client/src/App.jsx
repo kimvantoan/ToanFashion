@@ -8,7 +8,7 @@ import ListProduct from "./pages/ListProduct";
 import ProductDetails from "./pages/ProductDetails";
 import Account from "./pages/Account";
 import Search from "./pages/Search";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { loginStatus } from "./features/user/userSlice";
 import { useEffect } from "react";
 

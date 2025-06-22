@@ -8,6 +8,9 @@ import {
   deleteProductImage,
   getProducts,
   getProductBySlug,
+  getProductById,
+  getProductsByCategory,
+  getNewProducts,
 } from '../controllers/product.controller.js';
 
 import { protect, admin } from '../middlewares/auth.middleware.js';
@@ -18,8 +21,15 @@ const upload = multer({ storage });
 
 router.get('/', getProducts);
 
-router.get('/:slug', getProductBySlug); 
+router.get('/category/:categorySlug', getProductsByCategory);
 
+// Lấy sản phẩm mới nhất
+router.get('/new', getNewProducts); 
+
+router.get('/slug/:slug', getProductBySlug); 
+
+// Lấy product theo ID
+router.get('/:id', getProductById);
 // Tạo product có upload nhiều ảnh
 router.post('/', protect, admin, upload.array('images', 10), createProduct);
 
