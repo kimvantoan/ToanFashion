@@ -4,11 +4,10 @@ import slugify from "slugify";
 import cloudinary from "../config/cloudinary.js";
 export const getProducts = async (req, res) => {
   try {
-    const { brand, category, type } = req.query;
+    const { brand, category, type, sort } = req.query;
     let filter = {};
 
     if (brand) {
-      // Hỗ trợ nhiều brand, phân tách bằng dấu phẩy
       const brands = brand.split(',').map(b => b.trim());
       filter.brand = { $in: brands };
     }
@@ -25,8 +24,15 @@ export const getProducts = async (req, res) => {
 
     let query = Product.find(filter).populate("category", "name slug");
 
+    // Sắp xếp theo type hoặc sort param
     if (type === "new") {
-      query = query.sort({ createdAt: -1 })
+      query = query.sort({ createdAt: -1 });
+    } else if (sort) {
+      // sort = price-asc | price-desc | name-asc
+      if (sort === "price-asc") query = query.sort({ price: 1 });
+      else if (sort === "price-desc") query = query.sort({ price: -1 });
+      else if (sort === "name-asc") query = query.sort({ name: 1 });
+      // Thêm các trường hợp khác nếu cần
     }
 
     const products = await query;

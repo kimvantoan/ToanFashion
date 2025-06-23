@@ -1,26 +1,17 @@
 import { useState, useEffect } from "react";
-import {
-  TextField,
-  Radio,
-  RadioGroup,
-  FormControlLabel,
-  FormControl,
-  IconButton,
-  Tooltip,
-} from "@mui/material";
-import {
-  Add,
-  Remove,
-  ArrowBack,
-  ArrowForward,
-  Info,
-} from "@mui/icons-material";
+import { Button, IconButton } from "@mui/material";
+import { Add, Remove, Delete } from "@mui/icons-material";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { Link } from "react-router";
 import RootLayout from "../layout/RootLayout";
 import { formatPrice } from "../utils/Format_price";
-
+import {
+  fetchCart,
+  removeFromCart,
+  updateCartItemQuantity,
+} from "../features/cart/cartSlice";
+import { useDispatch, useSelector } from "react-redux";
 const Cart = () => {
   useEffect(() => {
     AOS.init({
@@ -28,26 +19,12 @@ const Cart = () => {
       once: true,
     });
   }, []);
-  const [products, setProducts] = useState([
-    {
-      id: 1,
-      name: "Thảm Phòng Tắm Nhựa TPE Hoa Tiết Cánh Hoa XING",
-      price: 169000,
-      image:
-        "https://product.hstatic.net/200000796751/product/rosabella_decoration_cushion_TOAN FASHION_2001469_2_78cbaab9d6f54098a7466357d9c2220d_medium.jpg",
-      quantity: 1,
-    },
-    {
-      id: 2,
-      name: "Đệm Trang Trí Vải Cotton Nhiều Màu ROSABELLA",
-      price: 199000,
-      image: "/placeholder.svg?height=80&width=80",
-      quantity: 1,
-      variant: "Cam / Trắng / D45xR45",
-    },
-  ]);
-
-  // Available vouchers
+  const dispatch = useDispatch();
+  const { cart, loading } = useSelector((state) => state.cart);
+  useEffect(() => {
+    dispatch(fetchCart());
+  }, [dispatch]);
+  const cartItem = cart?.items || [];
   const [vouchers] = useState([
     {
       id: "v1",
@@ -65,12 +42,6 @@ const Cart = () => {
     },
   ]);
 
-  // State for invoice option
-  const [needInvoice, setNeedInvoice] = useState(false);
-
-  // State for order notes
-  const [orderNotes, setOrderNotes] = useState("");
-
   return (
     <RootLayout>
       <div className="container mx-auto px-4 py-6 max-w-7xl">
@@ -80,10 +51,10 @@ const Cart = () => {
             Trang chủ
           </Link>
           <span>/</span>
-          <span className="text-red-600">Giỏ hàng ({products.length})</span>
+          <span className="text-red-600">Giỏ hàng ({cartItem?.length})</span>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 lg:gap-6 gap-0">
           {/* Left column - Cart items */}
           <div className="lg:col-span-2" data-aos="fade-up">
             <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
@@ -93,48 +64,18 @@ const Cart = () => {
               <p className="text-gray-700 mb-6">
                 Bạn đang có{" "}
                 <span className="font-medium text-red-600">
-                  {products.length} sản phẩm
+                  {cartItem?.length} sản phẩm
                 </span>{" "}
                 trong giỏ hàng
               </p>
 
-              {/* Product list */}
               <div className="space-y-6">
-                {products.map((product) => (
-                  <CartItem key={product.id} product={product} />
+                {cartItem.map((cart) => (
+                  <CartItem key={cart._id} cart={cart} />
                 ))}
               </div>
             </div>
-
-            {/* Order notes */}
-            {/* <div className="bg-white rounded-lg shadow-sm p-6 mb-6" data-aos="fade-up" data-aos-delay="100">
-            <h2 className="text-gray-800 font-medium mb-4">Ghi chú đơn hàng</h2>
-            <TextField
-              multiline
-              rows={4}
-              fullWidth
-              variant="outlined"
-              placeholder="Nhập ghi chú cho đơn hàng của bạn"
-              value={orderNotes}
-              onChange={(e) => setOrderNotes(e.target.value)}
-            />
-          </div> */}
-
-            {/* Invoice option */}
-            {/* <div className="bg-white rounded-lg shadow-sm p-6" data-aos="fade-up" data-aos-delay="150">
-            <FormControl component="fieldset">
-              <RadioGroup value={needInvoice} onChange={(e) => setNeedInvoice(e.target.value === "true")}>
-                <FormControlLabel
-                  value={true}
-                  control={<Radio color="error" />}
-                  label={<span className="text-gray-800">Xuất hoá đơn cho đơn hàng</span>}
-                />
-              </RadioGroup>
-            </FormControl>
-          </div> */}
           </div>
-
-          {/* Right column - Order summary */}
           <div
             className="lg:col-span-1"
             data-aos="fade-up"
@@ -148,17 +89,17 @@ const Cart = () => {
               <div className="flex justify-between items-center mb-6">
                 <span className="text-gray-800 font-medium">Tổng tiền:</span>
                 <span className="text-2xl font-bold text-red-600">
-                  {formatPrice(300000)}
+                  {formatPrice(
+                    cartItem.reduce((total, item) => {
+                      const price =
+                        item.productId.discount || item.productId.price;
+                      return total + price * item.quantity;
+                    }, 0)
+                  )}
                 </span>
               </div>
 
               <ul className="space-y-2 mb-6">
-                <li className="flex items-start">
-                  <span className="text-red-600 mr-2">•</span>
-                  <span className="text-gray-600 text-sm">
-                    Phí vận chuyển sẽ được tính ở trang Thanh toán.
-                  </span>
-                </li>
                 <li className="flex items-start">
                   <span className="text-red-600 mr-2">•</span>
                   <span className="text-gray-600 text-sm">
@@ -167,13 +108,15 @@ const Cart = () => {
                 </li>
               </ul>
 
-              <button
-                className="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-3 rounded-md transition-colors mb-6"
+              <Button
+                variant="contained"
+                color="error"
+                className="w-full"
                 data-aos="zoom-in"
                 data-aos-delay="300"
               >
                 THANH TOÁN
-              </button>
+              </Button>
 
               {/* Voucher navigation */}
               {/* <div className="flex justify-end mb-4">
@@ -235,45 +178,76 @@ const Cart = () => {
 
 export default Cart;
 
-const CartItem = ({ product }) => {
+const CartItem = ({ cart }) => {
+  const dispatch = useDispatch();
+  const price = cart?.productId?.price || 0;
+  const discount = cart?.productId?.discount || 0;
+  const finalPrice = discount > 0 ? discount : price;
+
+  const handleUpdate = (newQuantity) => {
+    if (newQuantity < 1) return;
+    dispatch(
+      updateCartItemQuantity({
+        id: cart._id,
+        data: { quantity: newQuantity },
+      })
+    );
+  };
+
   return (
     <div
-      key={product.id}
+      key={cart._id}
       className="flex flex-col sm:flex-row shadow  rounded-lg p-4 relative"
     >
       <div className="flex items-start">
         <div className="w-20 h-20 relative mr-4">
           <img
-            src={product.image || "/placeholder.svg"}
-            alt={product.name}
-            fill
+            src={
+              Array.isArray(cart?.productId?.images) &&
+              cart.productId.images.length > 0
+                ? cart.productId.images[0].url
+                : "/placeholder.svg"
+            }
+            alt={cart?.productId?.name}
             className="object-cover"
           />
         </div>
         <div className="flex-1">
-          <h3 className="text-gray-800 font-medium mb-1">{product.name}</h3>
-          <p className="text-gray-500 text-sm mb-2">
-            {product.price.toLocaleString("vi-VN")}₫
+          <h3 className="text-gray-800 font-medium mb-1">
+            {cart?.productId?.name}
+          </h3>
+          <div className="flex items-center mb-2">
+            {discount > 0 ? (
+              <span className="text-red-600 text-base font-semibold">
+                {formatPrice(discount)}
+              </span>
+            ) : (
+              <span className="text-gray-800 text-base font-semibold">
+                {formatPrice(price)}
+              </span>
+            )}
+          </div>
+          <p className="text-gray-500 text-xs">
+            {cart.color} - {cart.size}
           </p>
-          {product.variant && (
-            <p className="text-gray-500 text-xs">{product.variant}</p>
-          )}
         </div>
       </div>
 
       <div className="flex items-center justify-between mt-4 sm:mt-0 sm:ml-auto">
         <div className="text-lg font-medium text-gray-800">
-          {formatPrice(product.price)}
+          {formatPrice(finalPrice * cart.quantity)}
         </div>
         <div className="flex items-center ml-6">
           <IconButton
+            onClick={() => handleUpdate(cart.quantity - 1)}
             size="small"
             className="border border-gray-300"
           >
             <Remove fontSize="small" />
           </IconButton>
-          <span className="mx-3 w-6 text-center">{product.quantity}</span>
+          <span className="mx-3 w-6 text-center">{cart.quantity}</span>
           <IconButton
+            onClick={() => handleUpdate(cart.quantity + 1)}
             size="small"
             className="border border-gray-300"
           >
@@ -281,6 +255,13 @@ const CartItem = ({ product }) => {
           </IconButton>
         </div>
       </div>
+      <IconButton
+        size="small"
+        className="border border-gray-300"
+        onClick={() => dispatch(removeFromCart(cart._id))}
+      >
+        <Delete fontSize="small" color="error" />
+      </IconButton>
     </div>
   );
 };

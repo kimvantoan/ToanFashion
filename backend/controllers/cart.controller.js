@@ -3,7 +3,7 @@ import Cart from '../models/cart.model.js';
 // Get current user's cart
 export const getCart = async (req, res) => {
   try {
-    const cart = await Cart.findOne({ userId: req.user._id }).populate('items.productId', 'name price images');
+    const cart = await Cart.findOne({ userId: req.user._id }).populate('items.productId', 'name price images discount');
     res.json(cart || { userId: req.user._id, items: [] });
   } catch (err) {
     res.status(500).json({ message: 'Lấy giỏ hàng thất bại' });
@@ -45,29 +45,20 @@ export const addToCart = async (req, res) => {
 
 // Update quantity of an item in cart
 export const updateCartItemQuantity = async (req, res) => {
-  try {
-    const { productId, color, size, quantity } = req.body;
-    if (quantity < 1) {
-      return res.status(400).json({ message: 'Số lượng phải lớn hơn 0' });
-    }
-
-    const cart = await Cart.findOne({ userId: req.user._id });
+ try {
+    const { quantity } = req.body;
+    const { itemId } = req.params;
+    const cart = await Cart.findOne({ userId: req.user._id }).populate('items.productId', 'name price images discount');
     if (!cart) return res.status(404).json({ message: 'Không tìm thấy giỏ hàng' });
 
-    const item = cart.items.find(
-      item =>
-        item.productId.toString() === productId &&
-        item.color === color &&
-        item.size === size
-    );
-
+    const item = cart.items.find(item => item._id.toString() === itemId);
     if (!item) return res.status(404).json({ message: 'Không tìm thấy sản phẩm trong giỏ hàng' });
 
     item.quantity = quantity;
     await cart.save();
     res.json(cart);
   } catch (err) {
-    res.status(500).json({ message: 'Cập nhật số lượng thất bại' });
+    res.status(500).json(err);
   }
 };
 
@@ -75,7 +66,7 @@ export const updateCartItemQuantity = async (req, res) => {
 export const removeFromCart = async (req, res) => {
   try {
     const { itemId } = req.params
-    const cart = await Cart.findOne({ userId: req.user._id });
+    const cart = await Cart.findOne({ userId: req.user._id }).populate('items.productId', 'name price images discount');
     if (!cart) return res.status(404).json({ message: 'Không tìm thấy giỏ hàng' });
 
     cart.items = cart.items.filter(item => item._id.toString() !== itemId);

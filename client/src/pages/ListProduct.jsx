@@ -97,6 +97,19 @@ const ListProduct = () => {
     navigate(`${location.pathname}?${params.toString()}`, { replace: true });
   };
 
+  // Xử lý thay đổi sắp xếp
+  const handleSortChange = (e) => {
+    const value = e.target.value;
+    setSortOption(value);
+    const params = new URLSearchParams(location.search);
+    if (value && value !== "default") {
+      params.set("sort", value);
+    } else {
+      params.delete("sort");
+    }
+    navigate(`${location.pathname}?${params.toString()}`, { replace: true });
+  };
+
   // Gọi fetchProducts khi URL param thay đổi
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -104,6 +117,7 @@ const ListProduct = () => {
     if (params.get("brand")) fetchParams.brand = params.get("brand");
     if (params.get("type")) fetchParams.type = params.get("type");
     if (params.get("category")) fetchParams.category = params.get("category");
+    if (params.get("sort")) fetchParams.sort = params.get("sort");
     dispatch(fetchProducts(fetchParams));
   }, [dispatch, location.search]);
 
@@ -225,12 +239,11 @@ const ListProduct = () => {
                     labelId="sort-label"
                     value={sortOption}
                     label="Sắp xếp"
-                    onChange={(e) => setSortOption(e.target.value)}
+                    onChange={handleSortChange}
                   >
                     <MenuItem value="default">Mặc định</MenuItem>
                     <MenuItem value="price-asc">Giá tăng dần</MenuItem>
                     <MenuItem value="price-desc">Giá giảm dần</MenuItem>
-                    <MenuItem value="name-asc">Tên A-Z</MenuItem>
                   </Select>
                 </FormControl>
               </div>

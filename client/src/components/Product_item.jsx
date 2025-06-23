@@ -2,9 +2,11 @@ import React from "react";
 import { Favorite } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
 import { formatPrice } from "../utils/Format_price";
+import { Link } from "react-router";
 const Product_item = ({ product }) => {
   return (
-    <div
+    <Link
+      to={`/product/${product.slug}`}
       className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-all transform hover:-translate-y-1"
       data-aos="fade-up"
       data-aos-anchor-placement="top-bottom"
@@ -49,7 +51,7 @@ const Product_item = ({ product }) => {
           )}
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

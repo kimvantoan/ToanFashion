@@ -19,7 +19,8 @@ const API_ENDPOINTS = {
   cart: {
     get: '/cart',
     add: '/cart',
-    remove: (id) => `/cart/remove/${id}`,
+    update:(id) => `/cart/${id}`,
+    remove: (id) => `/cart/${id}`,
     clear: '/cart/clear',
   },
   order:{

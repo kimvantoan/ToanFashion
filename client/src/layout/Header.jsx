@@ -30,7 +30,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchCategories } from "../features/category/categorySlice";
 
 const Header = () => {
-  const [tabValue, setTabValue] = useState(0);
+  const [tabValue, setTabValue] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const anchorRef = useRef(null);
   const navigate = useNavigate();
@@ -43,6 +43,7 @@ const Header = () => {
     dispatch(fetchCategories());
   }, [dispatch]);
 
+  const {cart} = useSelector((state) => state.cart);
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const categorySlug = params.get("category");
@@ -184,7 +185,7 @@ const Header = () => {
               aria-label="cart"
               className="relative"
             >
-              <Badge badgeContent={5}>
+              <Badge badgeContent={cart?.items?.length || 0}>
                 <ShoppingCartIcon />
               </Badge>
               <span className="ml-1 text-xs text-white hidden md:inline">
