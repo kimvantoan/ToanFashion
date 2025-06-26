@@ -11,6 +11,7 @@ import Search from "./pages/Search";
 import { useDispatch } from "react-redux";
 import { loginStatus } from "./features/user/userSlice";
 import { useEffect } from "react";
+import Checkout from "./pages/Checkout";
 
 function App() {
   const dispatch = useDispatch();
@@ -30,6 +31,7 @@ function App() {
       <Route path="/product/:slug" element={<ProductDetails />} />
       <Route path="/account" element={<Account />} />
       <Route path="/search" element={<Search />} />
+      <Route path="/checkout" element={<Checkout />} />
       <Route path="*" element={<NotFound404 />} />
     </Routes>
   );

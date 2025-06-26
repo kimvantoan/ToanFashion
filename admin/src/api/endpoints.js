@@ -18,6 +18,13 @@ const  API_ENDPOINTS = {
         update: '/product/:id',
         delete: '/product/:id',
     },
+    voucher: {
+        getAll: '/voucher',
+        getById: '/voucher/:id',
+        create: '/voucher',
+        update: '/voucher/:id',
+        delete: '/voucher/:id',
+    },
 }
 
 export default API_ENDPOINTS;

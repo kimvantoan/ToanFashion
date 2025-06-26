@@ -9,6 +9,9 @@ import OrderDetail from "./pages/order/OrderDetail"
 import EditProduct from "./pages/product/EditProduct"
 import { ToastContainer } from "react-toastify"
 import 'react-toastify/dist/ReactToastify.css'
+import Voucher from "./pages/voucher/Voucher"
+import AddVoucher from "./pages/voucher/AddVoucher"
+import EditVoucher from "./pages/voucher/EditVoucher"
 function App() {
   return (
     <>
@@ -21,6 +24,10 @@ function App() {
         <Route path="/products" element={<Products />} />
         <Route path="/add-product" element={<AddProduct />} />
         <Route path="/product/:id" element={<EditProduct />} />
+        <Route path="/vouchers" element={<Voucher />} />
+        <Route path="/voucher/add" element={<AddVoucher />} />
+        <Route path="/voucher/edit/:id" element={<EditVoucher />} />
+
       </Routes>
       <ToastContainer />
     </>

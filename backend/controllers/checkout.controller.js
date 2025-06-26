@@ -3,6 +3,8 @@ import Product from '../models/product.model.js';
 import { applyVoucher } from '../utils/applyVoucher.js';
 
 export const getCheckoutData = async (req, res) => {
+  console.log(req.body);
+  
   const { fromCart, productId, color, size, quantity, voucherCode } = req.body;
   const userId = req.user._id;
 
@@ -20,6 +22,10 @@ export const getCheckoutData = async (req, res) => {
         const variant = product.variants.find(v => v.color === item.color);
         const sizeEntry = variant?.sizes.find(s => s.size === item.size);
 
+        const finalPrice = (product.discount && product.discount > 0)
+          ? product.discount
+          : product.price;
+
         return {
           productId: product._id,
           name: product.name,
@@ -27,7 +33,7 @@ export const getCheckoutData = async (req, res) => {
           color: item.color,
           size: item.size,
           quantity: item.quantity,
-          price: Math.round(product.price * (1 - (product.discount || 0) / 100)),
+          price: finalPrice,
           stock: sizeEntry?.stock ?? 0
         };
       });
@@ -42,6 +48,10 @@ export const getCheckoutData = async (req, res) => {
         return res.status(400).json({ message: 'Thông tin biến thể không hợp lệ' });
       }
 
+      const finalPrice = (product.discount && product.discount > 0)
+        ? product.discount
+        : product.price;
+
       checkoutItems.push({
         productId: product._id,
         name: product.name,
@@ -49,7 +59,7 @@ export const getCheckoutData = async (req, res) => {
         color,
         size,
         quantity,
-        price: Math.round(product.price * (1 - (product.discount || 0) / 100)),
+        price: finalPrice,
         stock: sizeEntry.stock
       });
     }

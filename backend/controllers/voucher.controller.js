@@ -10,6 +10,16 @@ export const createVoucher = async (req, res) => {
   }
 };
 
+export const getVoucherById = async (req, res) => {
+  try {
+    const voucher = await Voucher.findById(req.params.id);
+    if (!voucher) return res.status(404).json({ message: 'Không tìm thấy mã giảm giá' });
+    res.json(voucher);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 export const updateVoucher = async (req, res) => {
   try {
     const updated = await Voucher.findByIdAndUpdate(req.params.id, req.body, { new: true });

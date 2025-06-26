@@ -30,20 +30,14 @@ const API_ENDPOINTS = {
     createFromCart: '/order/from-cart',
   },
   voucher: {
-    create: '/voucher',
-    update: (id) => `/voucher/${id}`,
     getAll: '/voucher',
-    delete: (id) => `/voucher/${id}`,
   },
   category:	 {
     getAll: '/category',
     getBySlug: (slug) => `/category/slug/${slug}`,
-    create: '/category',
-    update: (id) => `/category/${id}`,
-    delete: (id) => `/category/${id}`,
   },
   checkout: {
-    create: '/checkout',
+    get: '/checkout',
   },
   address: {
     getAll: '/address',

@@ -1,17 +1,28 @@
 import { useState, useEffect } from "react";
-import { Button, IconButton } from "@mui/material";
-import { Add, Remove, Delete } from "@mui/icons-material";
+import { Button, IconButton, Tooltip } from "@mui/material";
+import {
+  Add,
+  Remove,
+  Delete,
+  ArrowBack,
+  ArrowForward,
+  Info,
+} from "@mui/icons-material";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import RootLayout from "../layout/RootLayout";
 import { formatPrice } from "../utils/Format_price";
+import formatDate from "../utils/formatDate";
+import voucher_icon from "../assets/voucher_icon.png";
 import {
   fetchCart,
   removeFromCart,
   updateCartItemQuantity,
 } from "../features/cart/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { fetchCheckout } from "../features/checkout/checkoutSlice";
+import { fetchVouchers } from "../features/voucher/voucherSlice";
 const Cart = () => {
   useEffect(() => {
     AOS.init({
@@ -19,28 +30,57 @@ const Cart = () => {
       once: true,
     });
   }, []);
+  const [copiedVoucher, setCopiedVoucher] = useState(null);
+  const navigate = useNavigate();
+  const handleCheckout = () => {
+    dispatch(fetchCheckout({ fromCart: true }));
+    navigate("/checkout", {
+      state: { fromCart: true },
+    });
+  };
+  const { vouchers } = useSelector((state) => state.voucher);
+  const [voucherPage, setVoucherPage] = useState(0);
+  const vouchersPerPage = 2;
+
+  const handlePrevVoucher = () => {
+    setVoucherPage((prev) => Math.max(prev - 1, 0));
+  };
+
+  const handleNextVoucher = () => {
+    setVoucherPage((prev) =>
+      prev + 1 < Math.ceil(vouchers.length / vouchersPerPage) ? prev + 1 : prev
+    );
+  };
+
+  const pagedVouchers = vouchers.slice(
+    voucherPage * vouchersPerPage,
+    voucherPage * vouchersPerPage + vouchersPerPage
+  );
+
   const dispatch = useDispatch();
-  const { cart, loading } = useSelector((state) => state.cart);
+
+  const { cart } = useSelector((state) => state.cart);
   useEffect(() => {
     dispatch(fetchCart());
+    dispatch(fetchVouchers());
   }, [dispatch]);
   const cartItem = cart?.items || [];
-  const [vouchers] = useState([
-    {
-      id: "v1",
-      code: "VOUCHERT3-200K",
-      discount: 200000,
-      minOrder: 3000000,
-      expiryDate: "31/03/2023",
-    },
-    {
-      id: "v2",
-      code: "VOUCHERT3-100K",
-      discount: 100000,
-      minOrder: 2000000,
-      expiryDate: "31/03/2023",
-    },
-  ]);
+  // const [vouchers] = useState([
+  //   {
+  //     id: "v1",
+  //     code: "VOUCHERT3-200K",
+  //     discount: 200000,
+  //     minOrder: 3000000,
+  //     expiryDate: "31/03/2023",
+  //   },
+  //   {
+  //     id: "v2",
+  //     code: "VOUCHERT3-100K",
+  //     discount: 100000,
+  //     minOrder: 2000000,
+  //     expiryDate: "31/03/2023",
+  //   },
+  // ]);
 
   return (
     <RootLayout>
@@ -109,6 +149,7 @@ const Cart = () => {
               </ul>
 
               <Button
+                onClick={handleCheckout}
                 variant="contained"
                 color="error"
                 className="w-full"
@@ -119,55 +160,90 @@ const Cart = () => {
               </Button>
 
               {/* Voucher navigation */}
-              {/* <div className="flex justify-end mb-4">
-              <div className="flex gap-2">
-                <button className="w-8 h-8 flex items-center justify-center border rounded-full text-gray-500 hover:bg-gray-100">
-                  <ArrowBack fontSize="small" />
-                </button>
-                <button className="w-8 h-8 flex items-center justify-center border rounded-full text-gray-500 hover:bg-gray-100">
-                  <ArrowForward fontSize="small" />
-                </button>
-              </div>
-            </div> */}
-
-              {/* Vouchers */}
-              {/* <div className="space-y-4" data-aos="fade-up" data-aos-delay="400">
-              {vouchers.map((voucher) => (
-                <div key={voucher.id} className="border border-yellow-200 bg-yellow-50 rounded-lg p-4 relative">
-                  <div className="flex">
-                    <div className="w-16 h-16 bg-yellow-100 rounded-lg flex items-center justify-center mr-3">
-                      <image src="/placeholder.svg?height=40&width=40" alt="Voucher" width={40} height={40} />
-                    </div>
-                    <div>
-                      <div className="flex items-center mb-1">
-                        <span className="font-medium text-gray-800">Giảm {formatPrice(voucher.discount)}</span>
-                        <Tooltip title="Thông tin chi tiết về voucher">
-                          <IconButton size="small">
-                            <Info fontSize="small" />
-                          </IconButton>
-                        </Tooltip>
-                      </div>
-                      <p className="text-xs text-gray-600">
-                        Đơn hàng từ {(voucher.minOrder / 1000000).toFixed(0)} triệu
-                      </p>
-                      <div className="flex items-center mt-2">
-                        <div className="text-xs text-gray-500 mr-2">
-                          <span className="font-medium">Mã: </span>
-                          {voucher.code}
-                        </div>
-                        <div className="text-xs text-gray-500">
-                          <span className="font-medium">HSD: </span>
-                          {voucher.expiryDate}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <button className="absolute right-3 bottom-3 bg-red-600 text-white text-xs px-3 py-1 rounded-full hover:bg-red-700 transition-colors">
-                    SAO CHÉP MÃ
+              <div className="flex justify-end my-4">
+                <div className="flex gap-2">
+                  <button
+                    className="w-8 h-8 flex items-center justify-center border rounded-full text-gray-500 hover:bg-gray-100"
+                    onClick={handlePrevVoucher}
+                    disabled={voucherPage === 0}
+                  >
+                    <ArrowBack fontSize="small" />
+                  </button>
+                  <button
+                    className="w-8 h-8 flex items-center justify-center border rounded-full text-gray-500 hover:bg-gray-100"
+                    onClick={handleNextVoucher}
+                    disabled={
+                      voucherPage + 1 >=
+                      Math.ceil(vouchers.length / vouchersPerPage)
+                    }
+                  >
+                    <ArrowForward fontSize="small" />
                   </button>
                 </div>
-              ))}
-            </div> */}
+              </div>
+
+              {/* Vouchers */}
+              <div
+                className="space-y-4"
+                data-aos="fade-up"
+                data-aos-delay="400"
+              >
+                {pagedVouchers.map((voucher) => (
+                  <div
+                    key={voucher._id}
+                    className="border border-yellow-200 bg-yellow-50 rounded-lg p-4 relative"
+                  >
+                    <div className="flex">
+                      <div className="w-16 h-16 bg-yellow-100 rounded-lg flex items-center justify-center mr-3">
+                        <img
+                          src={voucher_icon}
+                          alt="Voucher"
+                          width={40}
+                          height={40}
+                        />
+                      </div>
+                      <div>
+                        <div className="flex items-center mb-1">
+                          <span className="font-medium text-gray-800">
+                            Giảm{" "}
+                            {voucher.discountType === "percent"
+                              ? `${voucher.discountValue}%`
+                              : formatPrice(voucher.discountValue)}{" "}
+                            {voucher.maxDiscount
+                              ? ` (tối đa ${formatPrice(voucher.maxDiscount)})`
+                              : ""}
+                          </span>
+                        </div>
+                        <p className="text-xs text-gray-600">
+                          Đơn hàng từ {formatPrice(voucher.minOrderValue)}
+                        </p>
+                        <div className="flex items-center mt-2">
+                          <div className="text-xs text-gray-500 mr-2">
+                            <span className="font-medium">Mã: </span>
+                            {voucher.code}
+                          </div>
+                          <div className="text-xs text-gray-500">
+                            <span className="font-medium">HSD: </span>
+                            {formatDate(voucher.endDate)}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <Button
+                      color="error"
+                      size="small"
+                      variant="contained"
+                      onClick={() => {
+                        navigator.clipboard.writeText(voucher.code);
+                        setCopiedVoucher(voucher._id);
+                        setTimeout(() => setCopiedVoucher(null), 2000);
+                      }}
+                    >
+                      {copiedVoucher === voucher._id ? "Đã sao chép" : "Sao chép mã"}
+                    </Button>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
