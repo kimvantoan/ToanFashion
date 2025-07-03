@@ -78,6 +78,7 @@ const userSlice = createSlice({
     loading: false,
     fieldErrors: {},
     status: '',
+    profile: null
   },
   reducers: {
     clearUserState: (state) => {
@@ -154,7 +155,7 @@ const userSlice = createSlice({
         state.error = null;
         state.loading = false;
       })
-      // Fetch Profile
+      // Fetch Profileh
       .addCase(fetchUserProfile.pending, (state) => {
         state.status = 'loading';
         state.error = null;

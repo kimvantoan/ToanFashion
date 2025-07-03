@@ -19,6 +19,9 @@ import WishlistContent from "../components/WishlistContent";
 import RootLayout from "../layout/RootLayout";
 import { useDispatch, useSelector } from "react-redux";
 // Mock data
+  
+  
+import { fetchUserProfile } from "../features/user/userSlice";
 const userData = {
   name: "Sofia Havertz",
   profileImage:
@@ -103,6 +106,7 @@ const Account = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigator = useNavigate();
+  // const dispatch = useDispatch();
   useEffect(() => {
     // Initialize AOS
     AOS.init({
@@ -124,6 +128,10 @@ const Account = () => {
   }, []);
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchUserProfile());
+  }, [dispatch]);
 
 const handleLogout = async () => {
   const resultAction = await dispatch(logout());

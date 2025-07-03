@@ -28,6 +28,7 @@ import {
 import { Link, useNavigate, useLocation } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCategories } from "../features/category/categorySlice";
+import { fetchCart } from "../features/cart/cartSlice";
 
 const Header = () => {
   const [tabValue, setTabValue] = useState(false);
@@ -38,12 +39,17 @@ const Header = () => {
   const { user } = useSelector((state) => state.user);
   const { categories } = useSelector((state) => state.category);
   const location = useLocation();
-
+  const [searchValue, setSearchValue] = useState("");
   useEffect(() => {
     dispatch(fetchCategories());
+    dispatch(fetchCart());
   }, [dispatch]);
+  const handleSearch = (event) => {
+    event.preventDefault();
+    navigate(`/search?q=${searchValue}`);
+  };
 
-  const {cart} = useSelector((state) => state.cart);
+  const { cart } = useSelector((state) => state.cart);
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const categorySlug = params.get("category");
@@ -151,12 +157,15 @@ const Header = () => {
               className="flex items-center pl-4 pr-2 py-1 w-full"
             >
               <InputBase
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
                 placeholder="Tìm kiếm sản phẩm..."
                 className="flex-grow ml-1"
                 inputProps={{ "aria-label": "search" }}
               />
               <IconButton
                 type="submit"
+                onClick={handleSearch}
                 aria-label="search"
                 sx={{ bgcolor: "#c9184a", color: "white", borderRadius: "5px" }}
               >
@@ -202,12 +211,15 @@ const Header = () => {
           >
             <InputBase
               placeholder="Tìm kiếm sản phẩm..."
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
               className="flex-grow ml-1"
               inputProps={{ "aria-label": "search" }}
             />
             <IconButton
               type="submit"
               aria-label="search"
+              onClick={handleSearch}
               sx={{
                 bgcolor: "#c9184a",
                 color: "white",

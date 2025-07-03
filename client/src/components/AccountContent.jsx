@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
 const userData = {
     name: "Sofia Havertz",
     profileImage: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-pQA9QF12Re3qvPSQLP1R5cCl4osfSy.png",
@@ -52,6 +53,7 @@ const userData = {
     ],
   }
 const AccountContent = () => {
+  const {profile} = useSelector((state) => state.user);
   return (
     <div className="w-screen md:w-full px-6" data-aos="fade-up">
       <h2 className="text-xl font-semibold mb-4 text-[#c4123f]">
@@ -59,10 +61,10 @@ const AccountContent = () => {
       </h2>
       <div className="bg-gray-50 p-4 rounded-lg">
         <p className="mb-2">
-          <strong>Tên:</strong> {userData.name}
+          <strong>Tên:</strong> {profile?.username}
         </p>
         <p>
-          <strong>Email:</strong> sofia.havertz@example.com
+          <strong>Email:</strong> {profile?.email}
         </p>
       </div>
     </div>

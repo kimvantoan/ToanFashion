@@ -24,6 +24,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchProducts } from "../features/product/productSlice";
 import { fetchCategoryBySlug } from "../features/category/categorySlice";
 import { useNavigate, useLocation } from "react-router";
+import {
+  fetchWish,
+  addToWish,
+  removeFromWish,
+} from "../features/wish/wishSlice";
 
 const categories = [
   { id: "new", name: "Sản phẩm mới" },
@@ -50,7 +55,16 @@ const ListProduct = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  useEffect(() => {
+    dispatch(fetchWish());
+  }, [dispatch]);
 
+  const handleAddToWish = (id) => {
+    dispatch(addToWish({ productId: id }));
+  };
+  const handleRemoveFromWish = (id) => {
+    dispatch(removeFromWish(id));
+  };
   // Lấy brands từ query string khi load trang
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -131,7 +145,11 @@ const ListProduct = () => {
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
   const renderCategories = (isMobile = false) => (
-    <div className="mb-6" data-aos="fade-right" data-aos-delay={isMobile ? "100" : "100"}>
+    <div
+      className="mb-6"
+      data-aos="fade-right"
+      data-aos-delay={isMobile ? "100" : "100"}
+    >
       <div
         className="flex justify-between items-center cursor-pointer mb-3 bg-gray-50 p-3 rounded-lg"
         onClick={() => setCategoryOpen(!categoryOpen)}
@@ -160,7 +178,11 @@ const ListProduct = () => {
   );
 
   const renderBrands = (isMobile = false) => (
-    <div className="mb-6" data-aos="fade-right" data-aos-delay={isMobile ? "200" : "200"}>
+    <div
+      className="mb-6"
+      data-aos="fade-right"
+      data-aos-delay={isMobile ? "200" : "200"}
+    >
       <div
         className="flex justify-between items-center cursor-pointer mb-3 bg-gray-50 p-3 rounded-lg"
         onClick={() => setBrandOpen(!brandOpen)}
@@ -233,7 +255,10 @@ const ListProduct = () => {
                 >
                   {products.length} sản phẩm
                 </span>
-                <FormControl size="small" className="w-32 md:w-40 hidden md:block">
+                <FormControl
+                  size="small"
+                  className="w-32 md:w-40 hidden md:block"
+                >
                   <InputLabel id="sort-label">Sắp xếp</InputLabel>
                   <Select
                     labelId="sort-label"
@@ -286,8 +311,13 @@ const ListProduct = () => {
           {/* Main Content */}
           <main className="flex-1 p-4 md:p-6">
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
-              {products?.map((product, index) => (
-                <Product_item product={product} key={index} />
+              {products?.map((product) => (
+                <Product_item
+                  product={product}
+                  handleAddToWish={handleAddToWish}
+                  handleRemoveFromWish={handleRemoveFromWish}
+                  key={product._id}
+                />
               ))}
             </div>
           </main>

@@ -4,16 +4,17 @@ import slugify from "slugify";
 import cloudinary from "../config/cloudinary.js";
 export const getProducts = async (req, res) => {
   try {
-    const { brand, category, type, sort } = req.query;
+    const { brand, category, type, sort, search } = req.query;
     let filter = {};
 
+    // Tìm theo brand
     if (brand) {
       const brands = brand.split(',').map(b => b.trim());
       filter.brand = { $in: brands };
     }
 
+    // Tìm theo category slug
     if (category) {
-      // Tìm category theo slug
       const foundCategory = await Category.findOne({ slug: category });
       if (foundCategory) {
         filter.category = foundCategory._id;
@@ -22,25 +23,30 @@ export const getProducts = async (req, res) => {
       }
     }
 
+    // Tìm theo tên (search)
+    if (search) {
+      filter.name = { $regex: search, $options: "i" }; 
+    }
+
+    // Tạo truy vấn
     let query = Product.find(filter).populate("category", "name slug");
 
-    // Sắp xếp theo type hoặc sort param
+    // Sắp xếp
     if (type === "new") {
       query = query.sort({ createdAt: -1 });
     } else if (sort) {
-      // sort = price-asc | price-desc | name-asc
       if (sort === "price-asc") query = query.sort({ price: 1 });
       else if (sort === "price-desc") query = query.sort({ price: -1 });
       else if (sort === "name-asc") query = query.sort({ name: 1 });
-      // Thêm các trường hợp khác nếu cần
     }
 
     const products = await query;
-    res.json(products );
+    res.json(products);
   } catch (error) {
     res.status(500).json({ message: "Lỗi khi lấy danh sách sản phẩm" });
   }
 };
+
 
 // GET /api/products/:slug
 export const getProductBySlug = async (req, res) => {

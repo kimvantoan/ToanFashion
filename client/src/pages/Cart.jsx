@@ -6,7 +6,6 @@ import {
   Delete,
   ArrowBack,
   ArrowForward,
-  Info,
 } from "@mui/icons-material";
 import AOS from "aos";
 import "aos/dist/aos.css";
@@ -34,9 +33,8 @@ const Cart = () => {
   const navigate = useNavigate();
   const handleCheckout = () => {
     dispatch(fetchCheckout({ fromCart: true }));
-    navigate("/checkout", {
-      state: { fromCart: true },
-    });
+    sessionStorage.setItem("checkoutData", JSON.stringify({ fromCart: true }));
+    navigate("/checkout");
   };
   const { vouchers } = useSelector((state) => state.voucher);
   const [voucherPage, setVoucherPage] = useState(0);
@@ -65,23 +63,6 @@ const Cart = () => {
     dispatch(fetchVouchers());
   }, [dispatch]);
   const cartItem = cart?.items || [];
-  // const [vouchers] = useState([
-  //   {
-  //     id: "v1",
-  //     code: "VOUCHERT3-200K",
-  //     discount: 200000,
-  //     minOrder: 3000000,
-  //     expiryDate: "31/03/2023",
-  //   },
-  //   {
-  //     id: "v2",
-  //     code: "VOUCHERT3-100K",
-  //     discount: 100000,
-  //     minOrder: 2000000,
-  //     expiryDate: "31/03/2023",
-  //   },
-  // ]);
-
   return (
     <RootLayout>
       <div className="container mx-auto px-4 py-6 max-w-7xl">
@@ -239,7 +220,9 @@ const Cart = () => {
                         setTimeout(() => setCopiedVoucher(null), 2000);
                       }}
                     >
-                      {copiedVoucher === voucher._id ? "Đã sao chép" : "Sao chép mã"}
+                      {copiedVoucher === voucher._id
+                        ? "Đã sao chép"
+                        : "Sao chép mã"}
                     </Button>
                   </div>
                 ))}

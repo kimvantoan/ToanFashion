@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   TextField,
   Checkbox,
@@ -17,12 +17,12 @@ import BusinessIcon from "@mui/icons-material/Business";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCheckout } from "../features/checkout/checkoutSlice";
-import { useLocation, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import { useJsApiLoader, Autocomplete as GoogleAutocomplete } from "@react-google-maps/api";
 
 export default function Checkout() {
-  const location = useLocation();
-  const state = location.state;
+  const checkoutData =JSON.parse(sessionStorage.getItem("checkoutData"))
+  
   const [paymentMethod, setPaymentMethod] = useState("cod");
   const { items, subtotal, finalAmount, discountAmount } = useSelector(
     (state) => state.checkout
@@ -36,10 +36,12 @@ export default function Checkout() {
     ward: "",
     code: "",
   });
-
+  useEffect(() => {
+    dispatch(fetchCheckout({ ...checkoutData, voucherCode: formData.code }));
+  },[])
   const dispatch = useDispatch();
   const handleApplyDiscount = (e) => {
-    dispatch(fetchCheckout({ ...state, voucherCode: formData.code }));
+    dispatch(fetchCheckout({ ...checkoutData, voucherCode: formData.code }));
   };
   const navigate = useNavigate();
   const handleInputChange = (field, value) => {
@@ -47,11 +49,10 @@ export default function Checkout() {
   };
 
   const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: "AIzaSyC6ZBrHfqyN0oxBUWNvje1GZfHc-q9vpHU", 
+    googleMapsApiKey: "AIzaSyCblpeZdl62vU9mUK7ZIqWZbp9h1n7wsTE", 
     libraries: ["places"],
   });
 
-  // Ref cho Autocomplete
   const [autoComplete, setAutoComplete] = useState(null);
 
   const onLoad = (autocomplete) => {

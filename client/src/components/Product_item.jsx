@@ -1,9 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Favorite } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
 import { formatPrice } from "../utils/Format_price";
 import { Link } from "react-router";
-const Product_item = ({ product }) => {
+import { useDispatch, useSelector } from "react-redux";
+const Product_item = ({ product, handleAddToWish, handleRemoveFromWish }) => {
+  const { wish } = useSelector((state) => state.wish);
+  const isWished = wish?.products?.some((item) => item._id === product._id);
+
+  const handleToggleWish = () => {
+    if (isWished) {
+      handleRemoveFromWish(product._id);
+    } else {
+      handleAddToWish(product._id);
+    }
+  };
   return (
     <Link
       to={`/product/${product.slug}`}
@@ -18,15 +29,22 @@ const Product_item = ({ product }) => {
           className="w-full h-40 object-contain p-2"
           data-aos="zoom-in"
         />
-       
+
         <IconButton
           className="absolute top-2 left-2 bg-white shadow-sm p-1"
           size="small"
           data-aos="zoom-in"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            handleToggleWish();
+          }}
         >
           <Favorite
             fontSize="small"
-            className="text-gray-400 hover:text-rose-500"
+            className={
+              isWished ? "text-rose-500" : "text-gray-400 hover:text-rose-500"
+            }
           />
         </IconButton>
       </div>

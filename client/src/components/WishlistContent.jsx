@@ -1,127 +1,30 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import {
-  Person,
-  Edit,
-  Home,
-  ShoppingBag,
-  Favorite,
-  Logout,
-  KeyboardArrowDown,
-  Close,
-} from "@mui/icons-material";
-import AOS from "aos";
+import { Close } from "@mui/icons-material";
 import "aos/dist/aos.css";
-import AccountContent from "../components/AccountContent";
-import AddressContent from "../components/AddressContent";
-import OrdersContent from "../components/OrdersContent";
-const userData = {
-  name: "Sofia Havertz",
-  profileImage:
-    "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-pQA9QF12Re3qvPSQLP1R5cCl4osfSy.png",
-  addresses: {
-    billing: {
-      name: "Sofia Havertz",
-      phone: "+1 234 567 890",
-      address: "345 Long Island, NewYork, Hoa Kỳ",
-    },
-    shipping: {
-      name: "Sofia Havertz",
-      phone: "+1 234 567 890",
-      address: "345 Long Island, NewYork, Hoa Kỳ",
-    },
-  },
-  orders: [
-    {
-      id: "#3456_798",
-      date: "17/10/2023",
-      status: "Đã giao hàng",
-      price: "1.234.000₫",
-    },
-    {
-      id: "#3456_980",
-      date: "11/10/2023",
-      status: "Đã giao hàng",
-      price: "345.000₫",
-    },
-    {
-      id: "#3456_120",
-      date: "24/08/2023",
-      status: "Đã giao hàng",
-      price: "2.345.000₫",
-    },
-    {
-      id: "#3456_030",
-      date: "12/08/2023",
-      status: "Đã giao hàng",
-      price: "845.000₫",
-    },
-  ],
-  wishlist: [
-    {
-      id: 1,
-      name: "Bàn Khay",
-      color: "Đen",
-      price: "19.190₫",
-      image:
-        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-UtUsYVfzNgcHYcQaOKWmk5W3YHjkx4.png",
-    },
-    {
-      id: 2,
-      name: "Sofa",
-      color: "Be",
-      price: "345.000₫",
-      image:
-        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-UtUsYVfzNgcHYcQaOKWmk5W3YHjkx4.png",
-    },
-    {
-      id: 3,
-      name: "Giỏ tre",
-      color: "Be",
-      price: "8.800₫",
-      image:
-        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-UtUsYVfzNgcHYcQaOKWmk5W3YHjkx4.png",
-    },
-    {
-      id: 4,
-      name: "Gối",
-      color: "Be",
-      price: "8.800₫",
-      image:
-        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-UtUsYVfzNgcHYcQaOKWmk5W3YHjkx4.png",
-    },
-  ],
-};
+
+import Product_item from "./Product_item";
+import { fetchWish } from "../features/wish/wishSlice";
+import { useDispatch, useSelector } from "react-redux";
 const WishlistContent = () => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(fetchWish());
+  },[dispatch]);
+  const { wish } = useSelector((state) => state.wish);
+  const product = wish?.products
   return (
     <div className="w-screen md:w-full px-6" data-aos="fade-up">
       <h2 className="text-xl font-semibold mb-4 text-[#c4123f]">
         Danh Sách Yêu Thích
       </h2>
 
-      <div className="overflow-x-auto hidden md:block border-none">
-        <table className="min-w-full">
-          <thead>
-            <tr className="text-left text-sm text-gray-500">
-              <th className="pb-3"></th>
-              <th className="pb-3">Sản Phẩm</th>
-              <th className="pb-3">Giá</th>
-              <th className="pb-3">Thao Tác</th>
-            </tr>
-          </thead>
-          <tbody>
-            {userData.wishlist.map((item, index) => (
-              <WishItem key={index} item={item} />
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Mobile Wishlist View */}
-      <div className="md:hidden space-y-6">
-        {userData.wishlist.map((item, index) => (
-          <WishItem key={index} item={item} />
-        ))}
+      <div className="flex-1 p-4 md:p-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
+          {product?.map((product, index) => (
+            <Product_item product={product} key={index} />
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -133,7 +36,7 @@ const WishItem = ({ item }) => {
   return (
     <>
       {/* wish item destop */}
-      <tr  className="hidden md:table-row">
+      <tr className="hidden md:table-row">
         <td className="py-4 pr-2">
           <button className="text-gray-400">
             <Close />
@@ -163,10 +66,7 @@ const WishItem = ({ item }) => {
       </tr>
 
       {/* wish item mobile */}
-      <div
-        className="p-6 shadow md:hidden"
-        data-aos="fade-up"
-      >
+      <div className="p-6 shadow md:hidden" data-aos="fade-up">
         <button className="text-gray-400">
           <Close />
         </button>

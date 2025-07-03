@@ -7,6 +7,7 @@ import categoryRoute from './category.route.js';
 import checkoutRoute  from './checkout.route.js';
 import addressRoute from './address.route.js';
 import cartRoute from './cart.route.js';
+import wishRoute from './wish.route.js';
 const router = express.Router();
 
 router.use('/user', userRoute);
@@ -17,5 +18,6 @@ router.use('/cart', cartRoute);
 router.use('/category', categoryRoute);
 router.use('/checkout', checkoutRoute);
 router.use('/address', addressRoute);
+router.use('/wish', wishRoute);
 
 export default router;

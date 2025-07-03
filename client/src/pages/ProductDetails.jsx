@@ -127,7 +127,7 @@ const ProductDetails = () => {
   const handleCheckout = () => {
     if (!selectedColor || !selectedSize) return;
     const checkoutData = {
-      fromCart: null,
+      fromCart: false,
       productId: product._id,
       color: selectedColor,
       size: selectedSize,
@@ -135,15 +135,8 @@ const ProductDetails = () => {
       voucherCode: null,
     };
     dispatch(fetchCheckout(checkoutData));
-    navigate("/checkout", {
-      state: {
-        fromCart: false,
-        productId: product._id,
-        color: selectedColor,
-        size: selectedSize,
-        quantity,
-      },
-    });
+    sessionStorage.setItem("checkoutData", JSON.stringify(checkoutData));
+    navigate("/checkout")
   };
 
   // Related products
