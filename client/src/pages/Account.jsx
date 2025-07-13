@@ -159,9 +159,9 @@ const handleLogout = async () => {
   };
   return (
     <RootLayout>
-      <div className="mx-auto w-screen">
+      <div className="mx-20 w-screen">
         <h1
-          className="text-3xl font-bold text-center my-8 text-[#c4123f]"
+          className="text-3xl font-bold text-center my-2 text-[#c4123f]"
           data-aos="fade-down"
         >
           Tài Khoản Của Tôi

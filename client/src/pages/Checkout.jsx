@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import {
   TextField,
-  Checkbox,
   FormControlLabel,
   Button,
   Card,
@@ -11,59 +10,67 @@ import {
   Radio,
   RadioGroup,
   Paper,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
 import BusinessIcon from "@mui/icons-material/Business";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCheckout } from "../features/checkout/checkoutSlice";
-import {  useNavigate } from "react-router-dom";
-import { useJsApiLoader, Autocomplete as GoogleAutocomplete } from "@react-google-maps/api";
-
+import { useNavigate } from "react-router-dom";
+import { fetchAddresses } from "../features/address/addressSlice";
+import { createOrder } from "../features/order/orderSlice";
 export default function Checkout() {
-  const checkoutData =JSON.parse(sessionStorage.getItem("checkoutData"))
-  
-  const [paymentMethod, setPaymentMethod] = useState("cod");
+  const checkoutData = JSON.parse(sessionStorage.getItem("checkoutData"));
   const { items, subtotal, finalAmount, discountAmount } = useSelector(
     (state) => state.checkout
   );
+  const {loading} = useSelector((state) => state.order);
   const [formData, setFormData] = useState({
-    fullName: "",
-    phone: "",
     address: "",
-    city: "",
-    district: "",
-    ward: "",
     code: "",
+    paymentMethod: "COD",
   });
+
+const handleOrder = async () => {
+  try {
+    await dispatch(
+      createOrder({
+        fromCart: checkoutData.fromCart,
+        productId: checkoutData.productId,
+        color: checkoutData.color,
+        size: checkoutData.size,
+        quantity: checkoutData.quantity,
+        shippingAddress: formData.address,
+        paymentMethod: formData.paymentMethod,
+        voucherCode: formData.code,
+        totalAmount: finalAmount,
+      })
+    ).unwrap(); 
+
+    navigate("/order-success");
+  } catch (error) {
+    console.error("Order failed:", error);
+  }
+};
+
   useEffect(() => {
     dispatch(fetchCheckout({ ...checkoutData, voucherCode: formData.code }));
-  },[])
+  }, []);
   const dispatch = useDispatch();
-  const handleApplyDiscount = (e) => {
+  useEffect(() => {
+    dispatch(fetchAddresses());
+  }, []);
+  const { addresses } = useSelector((state) => state.address);
+  const handleApplyDiscount = () => {
     dispatch(fetchCheckout({ ...checkoutData, voucherCode: formData.code }));
   };
   const navigate = useNavigate();
   const handleInputChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: "AIzaSyCblpeZdl62vU9mUK7ZIqWZbp9h1n7wsTE", 
-    libraries: ["places"],
-  });
-
-  const [autoComplete, setAutoComplete] = useState(null);
-
-  const onLoad = (autocomplete) => {
-    setAutoComplete(autocomplete);
-  };
-
-  const onPlaceChanged = () => {
-    if (autoComplete !== null) {
-      const place = autoComplete.getPlace();
-      handleInputChange("address", place.formatted_address || "");
-    }
   };
 
   return (
@@ -78,75 +85,67 @@ export default function Checkout() {
                   ToanFashion
                 </Typography>
                 {/* Shipping Information */}
-                <Typography variant="h6" className="font-semibold mb-3">
-                  Thông tin giao hàng
-                </Typography>
-                <div className="flex flex-col gap-4 mb-5">
-                  <TextField
-                    fullWidth
-                    label="Họ và tên"
-                    variant="outlined"
-                    value={formData.fullName}
-                    size="small"
-                    onChange={(e) =>
-                      handleInputChange("fullName", e.target.value)
-                    }
-                  />
-                  <TextField
-                    fullWidth
-                    label="Số điện thoại"
-                    variant="outlined"
-                    type="tel"
-                    size="small"
-                    value={formData.phone}
-                    onChange={(e) => handleInputChange("phone", e.target.value)}
-                  />
-                </div>
-                <Typography variant="h6" className="font-semibold mb-3">
+                <Typography variant="h6" className="font-semibold">
                   Địa chỉ giao hàng
                 </Typography>
-                <div className="mb-5">
-                  {isLoaded ? (
-                    <GoogleAutocomplete
-                      onLoad={onLoad}
-                      onPlaceChanged={onPlaceChanged}
-                      options={{
-                        types: ["address"],
-                        componentRestrictions: { country: "vn" },
-                      }}
-                    >
-                      <TextField
-                        fullWidth
-                        label="Địa chỉ"
-                        variant="outlined"
-                        value={formData.address}
-                        onChange={(e) => handleInputChange("address", e.target.value)}
-                        size="small"
-                      />
-                    </GoogleAutocomplete>
-                  ) : (
-                    <TextField
-                      fullWidth
-                      label="Địa chỉ"
-                      variant="outlined"
-                      value={formData.address}
-                      onChange={(e) => handleInputChange("address", e.target.value)}
-                      size="small"
-                    />
-                  )}
-                </div>
+                <FormControl fullWidth>
+                  <InputLabel id="demo-simple-select-label">Địa chỉ</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={formData.address}
+                    label="Age"
+                    required
+                    onChange={(e) =>
+                      handleInputChange("address", e.target.value)
+                    }
+                  >
+                    {addresses.map((address) => (
+                      <MenuItem value={address}>
+                        <div key={address._id} className="bg-white w-full p-4">
+                          <div className="flex justify-between items-start mb-2">
+                            <div>
+                              <p className="text-base font-medium text-gray-800">
+                                {address.fullName}
+                              </p>
+                              <p className="text-sm text-gray-600">
+                                {address.phone}
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="text-sm text-gray-700 space-y-1 mt-2">
+                            <p>
+                              <span className="font-semibold">Địa chỉ:</span>
+                              {address.street}, {address.ward},{" "}
+                              {address.district}, {address.city}
+                            </p>
+                            {address.note && (
+                              <p>
+                                <span className="font-semibold">Ghi chú:</span>{" "}
+                                {address.note}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
                 {/* Payment Method */}
                 <Typography variant="h6" className="font-semibold mb-3">
                   Phương thức thanh toán
                 </Typography>
                 <RadioGroup
-                  value={paymentMethod}
-                  onChange={(e) => setPaymentMethod(e.target.value)}
+                  value={formData.paymentMethod}
+                  onChange={(e) =>
+                    setFormData({ ...formData, paymentMethod: e.target.value })
+                  }
                   className="space-y-3"
                 >
                   <Paper className="p-4">
                     <FormControlLabel
-                      value="cod"
+                      value="COD"
                       control={<Radio />}
                       label={
                         <div className="flex items-center gap-2">
@@ -302,16 +301,16 @@ export default function Checkout() {
             <Button
               onClick={() => navigate(-1)}
               variant="outlined"
-              size="small"
-              color="primary"
+              color="error"
             >
               Hủy
             </Button>
             <Button
+              onClick={handleOrder}
               variant="contained"
               color="error"
-              size="small"
               className="px-8"
+              loading={loading}
             >
               Hoàn tất đơn hàng
             </Button>

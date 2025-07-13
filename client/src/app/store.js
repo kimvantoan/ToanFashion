@@ -6,6 +6,8 @@ import cartReducer from "../features/cart/cartSlice";
 import checkoutReducer from "../features/checkout/checkoutSlice";
 import voucherReducer from "../features/voucher/voucherSlice";
 import wishReducer from "../features/wish/wishSlice";
+import addressReducer from "../features/address/addressSlice";
+import orderReducer from "../features/order/orderSlice";
 export const store = configureStore({
   reducer: {
     user: userReducer,
@@ -14,7 +16,9 @@ export const store = configureStore({
     cart: cartReducer,
     checkout: checkoutReducer,
     voucher: voucherReducer,
-    wish: wishReducer
+    wish: wishReducer,
+    address: addressReducer,
+    order: orderReducer
   },
 });
 

@@ -28,8 +28,6 @@ export const addToWish = createAsyncThunk(
 export const removeFromWish = createAsyncThunk(
   "wish/removeFromWish",
   async (id, { rejectWithValue }) => {
-    console.log(id);
-
     try {
       const response = await wishAPI.delete(id);
       return response.data;

@@ -25,6 +25,12 @@ const  API_ENDPOINTS = {
         update: '/voucher/:id',
         delete: '/voucher/:id',
     },
+    order: {
+        getAll: '/order',
+        getOrderById: '/order/:id',
+        updateDeliveryStatus: '/order/:id/delivery',
+        updatePaymentStatus: '/order/:id/payment',
+    }
 }
 
 export default API_ENDPOINTS;

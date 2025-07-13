@@ -3,8 +3,6 @@ import Product from '../models/product.model.js';
 import { applyVoucher } from '../utils/applyVoucher.js';
 
 export const getCheckoutData = async (req, res) => {
-  console.log(req.body);
-  
   const { fromCart, productId, color, size, quantity, voucherCode } = req.body;
   const userId = req.user._id;
 

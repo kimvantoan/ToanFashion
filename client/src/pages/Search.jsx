@@ -37,8 +37,8 @@ export default Search;
 
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router";
-const Search_Header = ({ q}) => {
-
+const Search_Header = ({ q }) => {
+  const { products } = useSelector((state) => state.product);
   return (
     <div
       className="mb-8 text-center"
@@ -47,14 +47,12 @@ const Search_Header = ({ q}) => {
     >
       <h1 className="text-4xl font-bold text-red-600 mb-2">Tim kiếm</h1>
       <p className="text-gray-600 mb-6">
-        Có <span className="font-medium">20</span> sản phẩm cho tìm kiếm
+        Có <span className="font-medium">{products.length}</span> sản phẩm cho
+        tìm kiếm
       </p>
       <div className="border-b-2 border-gray-200 w-32 mx-auto mt-6"></div>
 
-      <p className="mt-6 text-left">
-        {q && `Kết quả tìm kiếm cho "${q}"`}
-        
-      </p>
+      <p className="mt-6 text-left">{q && `Kết quả tìm kiếm cho "${q}"`}</p>
     </div>
   );
 };

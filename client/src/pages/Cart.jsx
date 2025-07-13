@@ -11,7 +11,7 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import { Link, useNavigate } from "react-router";
 import RootLayout from "../layout/RootLayout";
-import { formatPrice } from "../utils/Format_price";
+import formatPrice  from "../utils/Format_price";
 import formatDate from "../utils/formatDate";
 import voucher_icon from "../assets/voucher_icon.png";
 import {

@@ -5,4 +5,12 @@ const axiosClient = axios.create({
   withCredentials: true, 
 });
 
+axiosClient.interceptors.request.use(
+  async (config) => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
 export default axiosClient;

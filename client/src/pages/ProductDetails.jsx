@@ -22,7 +22,7 @@ import {
   fetchProductsByCategory,
 } from "../features/product/productSlice";
 import { addToCart } from "../features/cart/cartSlice";
-import { formatPrice } from "../utils/Format_price";
+import  formatPrice  from "../utils/Format_price";
 import { fetchCheckout } from "../features/checkout/checkoutSlice";
 import { fetchVouchers } from "../features/voucher/voucherSlice";
 

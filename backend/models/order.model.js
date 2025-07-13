@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import addressSchema from "./address.model.js";
 
 const orderItemSchema = new mongoose.Schema(
   {
@@ -17,18 +18,7 @@ const orderItemSchema = new mongoose.Schema(
   { _id: false }
 );
 
-const shippingAddressSchema = new mongoose.Schema(
-  {
-    fullName: String,
-    phone: String,
-    street: String,
-    city: String,
-    district: String,
-    ward: String,
-    note: String,
-  },
-  { _id: false }
-);
+const shippingAddressSchema = addressSchema;
 
 const orderSchema = new mongoose.Schema(
   {
@@ -51,7 +41,7 @@ const orderSchema = new mongoose.Schema(
     },
     deliveryStatus: {
       type: String,
-      enum: ["processing", "shipped", "delivered", "cancelled"],
+      enum: ["processing", "shipping", "delivered", "cancelled"],
       default: "processing",
     },
     totalAmount: { type: Number, required: true },

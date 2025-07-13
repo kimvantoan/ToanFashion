@@ -1,96 +1,340 @@
-import React from 'react'
-import { useState, useEffect } from "react"
-import { Person, Edit, Home, ShoppingBag, Favorite, Logout, KeyboardArrowDown, Close } from "@mui/icons-material"
-import AOS from "aos"
-import "aos/dist/aos.css"
-import AccountContent from "../components/AccountContent";
-import OrdersContent from "../components/OrdersContent";
-import WishlistContent from "../components/WishlistContent";
-
-const userData = {
-  name: "Sofia Havertz",
-  profileImage: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-pQA9QF12Re3qvPSQLP1R5cCl4osfSy.png",
-  addresses: {
-    billing: {
-      name: "Sofia Havertz",
-      phone: "+1 234 567 890",
-      address: "345 Long Island, NewYork, Hoa Kỳ",
-    },
-    shipping: {
-      name: "Sofia Havertz",
-      phone: "+1 234 567 890",
-      address: "345 Long Island, NewYork, Hoa Kỳ",
-    },
-  },
-  orders: [
-    { id: "#3456_798", date: "17/10/2023", status: "Đã giao hàng", price: "1.234.000₫" },
-    { id: "#3456_980", date: "11/10/2023", status: "Đã giao hàng", price: "345.000₫" },
-    { id: "#3456_120", date: "24/08/2023", status: "Đã giao hàng", price: "2.345.000₫" },
-    { id: "#3456_030", date: "12/08/2023", status: "Đã giao hàng", price: "845.000₫" },
-  ],
-  wishlist: [
-    {
-      id: 1,
-      name: "Bàn Khay",
-      color: "Đen",
-      price: "19.190₫",
-      image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-UtUsYVfzNgcHYcQaOKWmk5W3YHjkx4.png",
-    },
-    {
-      id: 2,
-      name: "Sofa",
-      color: "Be",
-      price: "345.000₫",
-      image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-UtUsYVfzNgcHYcQaOKWmk5W3YHjkx4.png",
-    },
-    {
-      id: 3,
-      name: "Giỏ tre",
-      color: "Be",
-      price: "8.800₫",
-      image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-UtUsYVfzNgcHYcQaOKWmk5W3YHjkx4.png",
-    },
-    {
-      id: 4,
-      name: "Gối",
-      color: "Be",
-      price: "8.800₫",
-      image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-UtUsYVfzNgcHYcQaOKWmk5W3YHjkx4.png",
-    },
-  ],
-}
+import { Delete, Edit } from "@mui/icons-material";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+  Typography,
+} from "@mui/material";
+import "aos/dist/aos.css";
+import React, { useState } from "react";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchAddresses,
+  updateAddress,
+  createAddress,
+  deleteAddress,
+} from "../features/address/addressSlice";
+import axios from "axios";
 const AddressContent = () => {
+  const [form, setForm] = useState({
+    fullName: "",
+    phone: "",
+    street: "",
+    city: "",
+    district: "",
+    ward: "",
+    note: "",
+  });
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogType, setDialogType] = useState("create");
+  const [editingAddress, setEditingAddress] = useState(null);
+  const dispatch = useDispatch();
+  const { addresses } = useSelector((state) => state.address);
+  useEffect(() => {
+    dispatch(fetchAddresses());
+  }, [dispatch]);
+  const handleOpenCreateDialog = () => {
+    setDialogType("create");
+    setForm({
+      fullName: "",
+      phone: "",
+      street: "",
+      city: "",
+      district: "",
+      ward: "",
+      note: "",
+    });
+    setEditingAddress(null);
+    setDialogOpen(true);
+  };
+  // Mở modal sửa
+  const handleOpenEditDialog = (address) => {
+    setDialogType("edit");
+    setForm({
+      fullName: address.fullName || "",
+      phone: address.phone || "",
+      street: address.street || "",
+      city: address.city || "",
+      district: address.district || "",
+      ward: address.ward || "",
+      note: address.note || "",
+    });
+    setEditingAddress(address);
+    setDialogOpen(true);
+  };
+
+  const handleDelete = (id) => {
+    dispatch(deleteAddress(id));
+  };
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+    setEditingAddress(null);
+  };
+
+  const handleSave = () => {
+    if (dialogType === "create") {
+      dispatch(createAddress(form));
+    } else {
+      dispatch(updateAddress({ id: editingAddress._id, data: form }));
+    }
+    setDialogOpen(false);
+    setEditingAddress(null);
+  };
+
+  const handleFormChange = (field, value) => {
+    setForm((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const host = "https://provinces.open-api.vn/api/";
+
+  const [provinces, setProvinces] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [wards, setWards] = useState([]);
+
+  const [selectedProvince, setSelectedProvince] = useState("");
+  const [selectedDistrict, setSelectedDistrict] = useState("");
+  const [selectedWard, setSelectedWard] = useState("");
+
+  // Load provinces on component mount
+  useEffect(() => {
+    axios.get(`${host}?depth=1`).then((res) => {
+      setProvinces(res.data);
+    });
+  }, []);
+
+  // Load districts when province changes
+  useEffect(() => {
+    if (selectedProvince) {
+      axios.get(`${host}p/${selectedProvince}?depth=2`).then((res) => {
+        setDistricts(res.data.districts);
+        setWards([]);
+        setSelectedDistrict("");
+        setSelectedWard("");
+      });
+    }
+  }, [selectedProvince]);
+
+  // Load wards when district changes
+  useEffect(() => {
+    if (selectedDistrict) {
+      axios.get(`${host}d/${selectedDistrict}?depth=2`).then((res) => {
+        setWards(res.data.wards);
+        setSelectedWard("");
+      });
+    }
+  }, [selectedDistrict]);
+
   return (
-    <div className="w-screen md:w-full px-6" data-aos="fade-up">
-    <h2 className="text-xl font-semibold mb-4 text-[#c4123f]">Địa Chỉ</h2>
-
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div className="bg-white p-4 rounded-lg border">
-        <div className="flex justify-between items-center mb-2">
-          <h3 className="font-medium">Địa Chỉ Thanh Toán</h3>
-          <button className="text-[#c4123f] flex items-center">
-            <Edit fontSize="small" /> <span className="ml-1">Sửa</span>
-          </button>
+    <>
+      <div className="w-screen md:w-full px-6" data-aos="fade-up">
+        <div className="flex justify-between mb-4 p-3">
+          <h2 className="text-xl font-semibold mb-4 text-[#c4123f]">Địa Chỉ</h2>
+          <Button
+            variant="contained"
+            onClick={handleOpenCreateDialog}
+            color="error"
+          >
+            Thêm địa chỉ
+          </Button>
         </div>
-        <p className="text-sm">{userData.addresses.billing.name}</p>
-        <p className="text-sm">{userData.addresses.billing.phone}</p>
-        <p className="text-sm">{userData.addresses.billing.address}</p>
-      </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {addresses.map((address) => (
+            <div
+              key={address._id}
+              className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition"
+            >
+              <div className="flex justify-between items-start mb-2">
+                <div>
+                  <p className="text-base font-medium text-gray-800">
+                    {address.fullName}
+                  </p>
+                  <p className="text-sm text-gray-600">{address.phone}</p>
+                </div>
+                <div className="flex gap-3">
+                  <button
+                    className="text-[#c4123f] flex cursor-pointer items-center text-sm font-medium"
+                    onClick={() => handleOpenEditDialog(address)}
+                  >
+                    <Edit fontSize="small" />
+                  </button>
+                  <button
+                    className="text-gray-400 flex cursor-pointer items-center text-sm font-medium"
+                    onClick={() => handleDelete(address._id)}
+                  >
+                    <Delete fontSize="small" />
+                  </button>
+                </div>
+              </div>
 
-      <div className="bg-white p-4 rounded-lg border">
-        <div className="flex justify-between items-center mb-2">
-          <h3 className="font-medium">Địa Chỉ Giao Hàng</h3>
-          <button className="text-[#c4123f] flex items-center">
-            <Edit fontSize="small" /> <span className="ml-1">Sửa</span>
-          </button>
+              <div className="text-sm text-gray-700 space-y-1 mt-2">
+                <p>
+                  <span className="font-semibold">Địa chỉ:</span>
+                  {address.street}, {address.ward}, {address.district},{" "}
+                  {address.city}
+                </p>
+                {address.note && (
+                  <p>
+                    <span className="font-semibold">Ghi chú:</span>{" "}
+                    {address.note}
+                  </p>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
-        <p className="text-sm">{userData.addresses.shipping.name}</p>
-        <p className="text-sm">{userData.addresses.shipping.phone}</p>
-        <p className="text-sm">{userData.addresses.shipping.address}</p>
       </div>
-    </div>
-  </div>
-  )
-}
+      <div id="main-content" inert={dialogOpen ? true : undefined}>
+        <Dialog
+          open={dialogOpen}
+          onClose={handleCloseDialog}
+          maxWidth="sm"
+          fullWidth
+        >
+          <DialogTitle className="border-b border-gray-200">
+            <Typography variant="h6" component="span" className="font-medium">
+              {dialogType === "create" ? "Tạo địa chỉ" : `Sửa địa chỉ`}
+            </Typography>
+          </DialogTitle>
 
-export default AddressContent
+          <DialogContent className="p-6">
+            <form className="grid grid-cols-2 gap-4 mt-2">
+              <TextField
+                fullWidth
+                label="Tên người nhận"
+                value={form.fullName}
+                onChange={(e) => handleFormChange("fullName", e.target.value)}
+                variant="outlined"
+                required
+                size="small"
+              />
+              <TextField
+                fullWidth
+                type="tel"
+                label="Điện thoại"
+                value={form.phone}
+                onChange={(e) => handleFormChange("phone", e.target.value)}
+                variant="outlined"
+                size="small"
+                required
+              />
+              <FormControl fullWidth sx={{ gridColumn: "span 2" }} size="small">
+                <InputLabel id="demo-simple-select-label">Thành phố</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={form.city}
+                  label="Thành phố"
+                  onChange={(e) => handleFormChange("city", e.target.value)}
+                >
+                  {provinces.map((province) => (
+                    <MenuItem
+                      key={province.code}
+                      value={province.name}
+                      onClick={() => setSelectedProvince(province.code)}
+                    >
+                      {province.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <FormControl fullWidth sx={{ gridColumn: "span 2" }} size="small">
+                <InputLabel id="demo-simple-select-label">
+                  Quận, huyện
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={form.district}
+                  label="Quận, huyện"
+                  onChange={(e) => handleFormChange("district", e.target.value)}
+                >
+                  {districts.map((district) => (
+                    <MenuItem
+                      key={district.code}
+                      value={district.name}
+                      onClick={() => setSelectedDistrict(district.code)}
+                    >
+                      {district.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <FormControl fullWidth sx={{ gridColumn: "span 2" }} size="small">
+                <InputLabel id="demo-simple-select-label">
+                  Xã, phường
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={form.ward}
+                  label="Xã, phường"
+                  onChange={(e) => handleFormChange("ward", e.target.value)}
+                >
+                  {wards.map((province) => (
+                    <MenuItem
+                      key={province.code}
+                      value={province.name}
+                      onClick={() => setSelectedProvince(province.code)}
+                    >
+                      {province.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <TextField
+                fullWidth
+                label="Chi tiết"
+                value={form.street}
+                onChange={(e) => handleFormChange("street", e.target.value)}
+                variant="outlined"
+                sx={{ gridColumn: "span 2" }}
+                size="small"
+              />
+              <TextField
+                fullWidth
+                label="Ghi chú"
+                value={form.note}
+                onChange={(e) => handleFormChange("note", e.target.value)}
+                variant="outlined"
+                multiline
+                rows={3}
+                sx={{ gridColumn: "span 2" }}
+                size="small"
+              />
+            </form>
+          </DialogContent>
+          <DialogActions className="p-4 border-t border-gray-200">
+            <Button
+              color="error"
+              onClick={handleCloseDialog}
+              className="text-gray-600"
+            >
+              Hủy
+            </Button>
+            <Button
+              onClick={handleSave}
+              variant="contained"
+              color="error"
+              className="bg-blue-600"
+            >
+              {dialogType === "create" ? "Thêm" : "Lưu"}
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
+    </>
+  );
+};
+
+export default AddressContent;

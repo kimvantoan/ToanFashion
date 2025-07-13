@@ -27,7 +27,6 @@ const API_ENDPOINTS = {
     create: "/order",
     getMyOrders: "/order/my",
     getOrderById: (id) => `/order/${id}`,
-    createFromCart: "/order/from-cart",
   },
   voucher: {
     getAll: "/voucher",

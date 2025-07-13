@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Favorite } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
-import { formatPrice } from "../utils/Format_price";
+import  formatPrice  from "../utils/Format_price";
 import { Link } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 const Product_item = ({ product, handleAddToWish, handleRemoveFromWish }) => {
