@@ -1,7 +1,5 @@
-import React from "react";
 import { useState, useEffect } from "react";
 
-import "aos/dist/aos.css";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchMyOrders } from "../features/order/orderSlice";
 import formatDate from "../utils/formatDate";
@@ -17,8 +15,6 @@ import {
 const OrdersContent = () => {
   const dispatch = useDispatch();
   const { orders } = useSelector((state) => state.order);
-  console.log(orders);
-
   useEffect(() => {
     dispatch(fetchMyOrders());
   }, [dispatch]);

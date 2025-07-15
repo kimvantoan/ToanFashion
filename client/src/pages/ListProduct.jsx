@@ -17,8 +17,6 @@ import {
   Close,
   FilterList,
 } from "@mui/icons-material";
-import AOS from "aos";
-import "aos/dist/aos.css";
 import Product_item from "../components/Product_item";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProducts } from "../features/product/productSlice";
@@ -136,7 +134,6 @@ const ListProduct = () => {
   }, [dispatch, location.search]);
 
   useEffect(() => {
-    AOS.init({ duration: 800, once: false, mirror: true, offset: 50 });
     const handleScroll = () => setScrollPosition(window.scrollY);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);

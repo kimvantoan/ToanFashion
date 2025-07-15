@@ -1,23 +1,18 @@
-import React from "react";
 import { useState, useEffect } from "react";
 import {
   Person,
-  Edit,
   Home,
   ShoppingBag,
   Favorite,
   Logout,
   KeyboardArrowDown,
-  Close,
 } from "@mui/icons-material";
-import AOS from "aos";
-import "aos/dist/aos.css";
 import AccountContent from "../components/AccountContent";
 import AddressContent from "../components/AddressContent";
 import OrdersContent from "../components/OrdersContent";
 import WishlistContent from "../components/WishlistContent";
 import RootLayout from "../layout/RootLayout";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 // Mock data
   
   
@@ -100,20 +95,11 @@ const userData = {
   ],
 };
 import { logout } from "../features/user/userSlice";
-import { useNavigate } from "react-router";
 const Account = () => {
   const [activeTab, setActiveTab] = useState("account");
   const [isMobile, setIsMobile] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const navigator = useNavigate();
-  // const dispatch = useDispatch();
   useEffect(() => {
-    // Initialize AOS
-    AOS.init({
-      duration: 800,
-      once: true,
-    });
-
     // Check if mobile
     const checkIfMobile = () => {
       setIsMobile(window.innerWidth < 768);

@@ -1,6 +1,4 @@
 import { useEffect } from "react";
-import "aos/dist/aos.css";
-
 import Product_item from "./Product_item";
 import {
   fetchWish,

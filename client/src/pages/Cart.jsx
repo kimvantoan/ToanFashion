@@ -7,8 +7,6 @@ import {
   ArrowBack,
   ArrowForward,
 } from "@mui/icons-material";
-import AOS from "aos";
-import "aos/dist/aos.css";
 import { Link, useNavigate } from "react-router";
 import RootLayout from "../layout/RootLayout";
 import formatPrice  from "../utils/Format_price";
@@ -23,12 +21,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchCheckout } from "../features/checkout/checkoutSlice";
 import { fetchVouchers } from "../features/voucher/voucherSlice";
 const Cart = () => {
-  useEffect(() => {
-    AOS.init({
-      duration: 800,
-      once: true,
-    });
-  }, []);
   const [copiedVoucher, setCopiedVoucher] = useState(null);
   const navigate = useNavigate();
   const handleCheckout = () => {

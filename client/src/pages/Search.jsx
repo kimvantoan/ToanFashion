@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import RootLayout from "../layout/RootLayout";
-import AOS from "aos";
 import Product_item from "../components/Product_item";
 import { fetchProducts } from "../features/product/productSlice";
 const Search = () => {
@@ -12,13 +11,6 @@ const Search = () => {
     dispatch(fetchProducts({ search: q }));
   }, [q]);
   const { products } = useSelector((state) => state.product);
-  useEffect(() => {
-    AOS.init({
-      duration: 800,
-      once: true,
-      easing: "ease-in-out",
-    });
-  }, []);
   return (
     <RootLayout>
       <div className=" mx-auto px-4 md:px-40 py-8">

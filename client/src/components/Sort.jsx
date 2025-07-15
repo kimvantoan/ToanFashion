@@ -1,21 +1,11 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import AOS from "aos";
-import "aos/dist/aos.css";
 
 const Sort = () => {
     const [sortOpen, setSortOpen] = useState(false)
     const sortOptions = ["Mới nhất", "Giá: Thấp đến cao", "Giá: Cao đến thấp", "Bán chạy nhất"]
     const [selectedSort, setSelectedSort] = useState(sortOptions[0])
-  
-    useEffect(() => {
-      // Refresh AOS when component mounts
-      if (typeof AOS !== "undefined") {
-        AOS.init()
-        AOS.refresh()
-      }
-    }, [])
+
   return (
     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
       <h1

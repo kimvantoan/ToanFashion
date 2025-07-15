@@ -12,8 +12,6 @@ import {
   ArrowBack,
   ArrowForward,
 } from "@mui/icons-material";
-import AOS from "aos";
-import "aos/dist/aos.css";
 import RootLayout from "../layout/RootLayout";
 import Product_item from "../components/Product_item";
 import { useNavigate, useParams } from "react-router";
@@ -62,11 +60,6 @@ const ProductDetails = () => {
       dispatch(fetchProductsByCategory(product.category.slug));
     }
   }, [product, dispatch]);
-
-  // Init AOS animation
-  useEffect(() => {
-    AOS.init({ duration: 800, once: true });
-  }, []);
 
   // Voucher paging
   const vouchersPerPage = 2;

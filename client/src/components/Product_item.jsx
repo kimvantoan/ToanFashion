@@ -1,9 +1,8 @@
-import React, { useEffect } from "react";
 import { Favorite } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
 import  formatPrice  from "../utils/Format_price";
 import { Link } from "react-router";
-import { useDispatch, useSelector } from "react-redux";
+import {  useSelector } from "react-redux";
 const Product_item = ({ product, handleAddToWish, handleRemoveFromWish }) => {
   const { wish } = useSelector((state) => state.wish);
   const isWished = wish?.products?.some((item) => item._id === product._id);

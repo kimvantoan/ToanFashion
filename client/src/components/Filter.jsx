@@ -1,15 +1,10 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import AOS from "aos";
-import "aos/dist/aos.css";
 
 const Filter = () => {
   const [categoryOpen, setCategoryOpen] = useState(true);
   const [brandOpen, setBrandOpen] = useState(true);
   const [priceOpen, setPriceOpen] = useState(true);
-  const [aosLoaded, setAosLoaded] = useState(false);
-
   const brands = [
     "ZARA",
     "H&M",
@@ -30,18 +25,6 @@ const Filter = () => {
     "3.000.000₫ - 4.000.000₫",
     "Trên 4.000.000₫",
   ];
-
-  useEffect(() => {
-    // Check if AOS is loaded
-    if (typeof AOS !== "undefined") {
-      setAosLoaded(true);
-      AOS.init({
-        duration: 500,
-        once: true,
-      });
-      AOS.refresh();
-    }
-  }, [categoryOpen, brandOpen, priceOpen]);
 
   return (
     <div className="space-y-6">

@@ -13,6 +13,8 @@ import { loginStatus } from "./features/user/userSlice";
 import { useEffect } from "react";
 import Checkout from "./pages/Checkout";
 import OrderSuccess from "./components/OrderSuccess";
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 function App() {
   const dispatch = useDispatch();
@@ -22,6 +24,16 @@ function App() {
     };
     checkLogin();
   }, [dispatch]);
+  useEffect(() => {
+    if (typeof AOS !== "undefined") {
+      AOS.init({
+        duration: 500,
+        once: true,
+      });
+      AOS.refresh();
+    }
+  }, []);
+
   return (
     <Routes>
       <Route exact path="/" element={<Home />} />

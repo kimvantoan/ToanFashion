@@ -4,7 +4,7 @@ import slugify from "slugify";
 import cloudinary from "../config/cloudinary.js";
 export const getProducts = async (req, res) => {
   try {
-    const { brand, category, type, sort, search } = req.query;
+    const { brand, category, type, sort, search, limit } = req.query;
     let filter = {};
 
     // Tìm theo brand
@@ -40,9 +40,18 @@ export const getProducts = async (req, res) => {
       else if (sort === "name-asc") query = query.sort({ name: 1 });
     }
 
+    // Áp dụng limit nếu có
+    if (limit) {
+      const parsedLimit = parseInt(limit);
+      if (!isNaN(parsedLimit) && parsedLimit > 0) {
+        query = query.limit(parsedLimit);
+      }
+    }
+
     const products = await query;
     res.json(products);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: "Lỗi khi lấy danh sách sản phẩm" });
   }
 };
