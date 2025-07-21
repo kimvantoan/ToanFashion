@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router";
-import RootLayout from "../layout/RootLayout";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../features/user/userSlice";
 import { useEffect } from "react";
@@ -49,7 +48,6 @@ const Login = () => {
   }, [status, navigate]);
 
   return (
-    <RootLayout>
       <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
         <div className="flex border-b border-gray-200">
           <button
@@ -190,7 +188,6 @@ const Login = () => {
           </form>
         </div>
       </div>
-    </RootLayout>
   );
 };
 

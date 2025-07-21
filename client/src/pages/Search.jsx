@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import RootLayout from "../layout/RootLayout";
 import Product_item from "../components/Product_item";
 import { fetchProducts } from "../features/product/productSlice";
 const Search = () => {
@@ -12,7 +11,6 @@ const Search = () => {
   }, [q]);
   const { products } = useSelector((state) => state.product);
   return (
-    <RootLayout>
       <div className=" mx-auto px-4 md:px-40 py-8">
         <Search_Header q={q} />
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
@@ -21,7 +19,6 @@ const Search = () => {
           ))}
         </div>
       </div>
-    </RootLayout>
   );
 };
 

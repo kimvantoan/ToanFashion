@@ -1,7 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router";
 import { Button } from "@mui/material";
-import RootLayout from "../layout/RootLayout";
 
 const NotFound404 = () => {
   const navigate = useNavigate();
@@ -10,7 +9,6 @@ const NotFound404 = () => {
     navigate("/");
   };
   return (
-    <RootLayout>
       <div className="flex flex-col items-center justify-center  px-4 py-8 bg-white">
         <h1 className="text-[200px] font-bold text-gray-300 drop-shadow-2xl tracking-wider leading-none">
           404
@@ -39,7 +37,6 @@ const NotFound404 = () => {
           TRỞ VỀ TRANG CHỦ
         </Button>
       </div>
-    </RootLayout>
   );
 };
 

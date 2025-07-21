@@ -12,7 +12,6 @@ import {
   ArrowBack,
   ArrowForward,
 } from "@mui/icons-material";
-import RootLayout from "../layout/RootLayout";
 import Product_item from "../components/Product_item";
 import { useNavigate, useParams } from "react-router";
 import {
@@ -136,7 +135,6 @@ const ProductDetails = () => {
   const similarProducts = products.filter((p) => p?._id !== product?._id);
 
   return (
-    <RootLayout>
       <div className="bg-gray-50 min-h-screen">
         {/* Breadcrumb */}
         <div className="px-4 py-2 text-sm text-gray-500 flex items-center gap-2 bg-white max-w-7xl mx-auto">
@@ -526,7 +524,6 @@ const ProductDetails = () => {
           </div>
         </div>
       </div>
-    </RootLayout>
   );
 };
 

@@ -42,7 +42,6 @@ const Order = () => {
 
   const dispatch = useDispatch();
   const { orders } = useSelector((state) => state.order);
-  console.log(orders);
 
   useEffect(() => {
     dispatch(fetchOrders());
@@ -106,22 +105,26 @@ const Order = () => {
   );
   const totalPages = Math.ceil(filteredOrders.length / rowsPerPage);
 
-  const getStatusColor = (status, type) => {
-    if (type === "payment") {
-      return status === "Paid" ? "success" : "warning";
-    } else {
-      switch (status) {
-        case "Ready":
-          return "warning";
-        case "Shipped":
-          return "info";
-        case "Received":
-          return "primary";
-        default:
-          return "default";
-      }
+const getStatusColor = (status, type) => {
+  if (type === "payment") {
+    return status === "unpaid"
+      ? "warning"
+      : "success";
+  } else {
+    switch (status) {
+      case "processing":
+        return "warning";
+      case "shipped":
+        return "info";
+      case "delivered":
+        return "success";
+      case "cancelled":
+        return "error";
+      default:
+        return "default";
     }
-  };
+  }
+};
   const navigate = useNavigate();
 
   return (

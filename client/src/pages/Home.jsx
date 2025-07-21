@@ -1,15 +1,11 @@
-import RootLayout from "../layout/RootLayout";
-
 const Home = () => {
   return (
-    <RootLayout>
-      <div className="flex flex-col">
-        <Slider />
-        <CategoryGrid />
-        <NewArival />
-        <FeatureSection />
-      </div>
-    </RootLayout>
+    <div className="flex flex-col">
+      <Slider />
+      <CategoryGrid />
+      <NewArival />
+      <FeatureSection />
+    </div>
   );
 };
 
@@ -90,10 +86,7 @@ const CategoryGrid = () => {
 import { fetchProducts } from "../features/product/productSlice";
 import { useEffect } from "react";
 import Product_item from "../components/Product_item";
-import {
-  addToWish,
-  removeFromWish,
-} from "../features/wish/wishSlice";
+import { addToWish, removeFromWish } from "../features/wish/wishSlice";
 const NewArival = () => {
   const dispatch = useDispatch();
   const { products } = useSelector((state) => state.product);

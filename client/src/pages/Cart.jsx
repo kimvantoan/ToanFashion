@@ -8,7 +8,6 @@ import {
   ArrowForward,
 } from "@mui/icons-material";
 import { Link, useNavigate } from "react-router";
-import RootLayout from "../layout/RootLayout";
 import formatPrice  from "../utils/Format_price";
 import formatDate from "../utils/formatDate";
 import voucher_icon from "../assets/voucher_icon.png";
@@ -56,7 +55,6 @@ const Cart = () => {
   }, [dispatch]);
   const cartItem = cart?.items || [];
   return (
-    <RootLayout>
       <div className="container mx-auto px-4 py-6 max-w-7xl">
         {/* Navigation */}
         <div className="flex items-center gap-2 text-sm mb-6 text-gray-600">
@@ -223,7 +221,6 @@ const Cart = () => {
           </div>
         </div>
       </div>
-    </RootLayout>
   );
 };
 

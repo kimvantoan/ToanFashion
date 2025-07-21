@@ -1,5 +1,4 @@
 import React, { useLayoutEffect, useState, useEffect } from "react";
-import RootLayout from "../layout/RootLayout";
 import {
   Checkbox,
   FormControlLabel,
@@ -27,6 +26,7 @@ import {
   addToWish,
   removeFromWish,
 } from "../features/wish/wishSlice";
+import ProductCardSkeleton from "../components/ProductCardSkeleton";
 
 const categories = [
   { id: "new", name: "Sản phẩm mới" },
@@ -49,14 +49,16 @@ const ListProduct = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
   const [categoryName, setCategoryName] = useState("");
   const { category } = useSelector((state) => state.category);
-  const { products } = useSelector((state) => state.product);
+  const { products, loading } = useSelector((state) => state.product);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   useEffect(() => {
     dispatch(fetchWish());
   }, [dispatch]);
-
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const handleAddToWish = (id) => {
     dispatch(addToWish({ productId: id }));
   };
@@ -215,112 +217,114 @@ const ListProduct = () => {
   );
 
   return (
-    <RootLayout>
-      <div className="flex flex-col min-h-screen bg-gray-50">
-        {/* Header */}
-        <header
-          className={`sticky top-0 z-30 bg-white shadow-sm transition-all duration-300 ${
-            scrollPosition > 50 ? "py-2" : "py-4"
-          }`}
-        >
-          <div className="container mx-auto px-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <IconButton
-                  sx={{ display: { xs: "block", md: "none" }, mr: 2 }}
-                  onClick={toggleSidebar}
-                  aria-label="Toggle sidebar"
+    <div className="flex flex-col min-h-screen bg-gray-50">
+      {/* Header */}
+      <header
+        className={`sticky top-0 z-30 bg-white shadow-sm transition-all duration-300 ${
+          scrollPosition > 50 ? "py-2" : "py-4"
+        }`}
+      >
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <IconButton
+                sx={{ display: { xs: "block", md: "none" }, mr: 2 }}
+                onClick={toggleSidebar}
+                aria-label="Toggle sidebar"
+              >
+                <FilterList />
+              </IconButton>
+              <h1 className="text-xl font-medium text-rose-600">
+                {(() => {
+                  const params = new URLSearchParams(location.search);
+                  if (params.get("type") === "new") return "Sản phẩm mới";
+                  if (params.get("type") === "all") return "Tất cả sản phẩm";
+                  if (params.get("category") && categoryName)
+                    return `Danh mục: ${categoryName}`;
+                  return "Danh sách sản phẩm";
+                })()}
+              </h1>
+            </div>
+            <div className="flex items-center gap-2">
+              <span
+                className="text-gray-600 hidden md:inline-block"
+                data-aos="fade-left"
+                data-aos-delay="300"
+              >
+                {products.length} sản phẩm
+              </span>
+              <FormControl
+                size="small"
+                className="w-32 md:w-40 hidden md:block"
+              >
+                <InputLabel id="sort-label">Sắp xếp</InputLabel>
+                <Select
+                  labelId="sort-label"
+                  value={sortOption}
+                  label="Sắp xếp"
+                  onChange={handleSortChange}
                 >
-                  <FilterList />
-                </IconButton>
-                <h1 className="text-xl font-medium text-rose-600">
-                  {(() => {
-                    const params = new URLSearchParams(location.search);
-                    if (params.get("type") === "new") return "Sản phẩm mới";
-                    if (params.get("type") === "all") return "Tất cả sản phẩm";
-                    if (params.get("category") && categoryName)
-                      return `Danh mục: ${categoryName}`;
-                    return "Danh sách sản phẩm";
-                  })()}
-                </h1>
-              </div>
-              <div className="flex items-center gap-2">
-                <span
-                  className="text-gray-600 hidden md:inline-block"
-                  data-aos="fade-left"
-                  data-aos-delay="300"
-                >
-                  {products.length} sản phẩm
-                </span>
-                <FormControl
-                  size="small"
-                  className="w-32 md:w-40 hidden md:block"
-                >
-                  <InputLabel id="sort-label">Sắp xếp</InputLabel>
-                  <Select
-                    labelId="sort-label"
-                    value={sortOption}
-                    label="Sắp xếp"
-                    onChange={handleSortChange}
-                  >
-                    <MenuItem value="default">Mặc định</MenuItem>
-                    <MenuItem value="price-asc">Giá tăng dần</MenuItem>
-                    <MenuItem value="price-desc">Giá giảm dần</MenuItem>
-                  </Select>
-                </FormControl>
-              </div>
+                  <MenuItem value="default">Mặc định</MenuItem>
+                  <MenuItem value="price-asc">Giá tăng dần</MenuItem>
+                  <MenuItem value="price-desc">Giá giảm dần</MenuItem>
+                </Select>
+              </FormControl>
             </div>
           </div>
-        </header>
-
-        <div className="flex flex-1">
-          {/* Sidebar - Mobile Drawer */}
-          <Drawer
-            anchor="left"
-            open={sidebarOpen}
-            onClose={toggleSidebar}
-            className="md:hidden"
-          >
-            <div className="w-72">
-              <div className="p-4 flex justify-between items-center border-b">
-                <h2 className="font-medium">Bộ lọc sản phẩm</h2>
-                <IconButton onClick={toggleSidebar} size="small">
-                  <Close />
-                </IconButton>
-              </div>
-              <div className="p-4 overflow-y-auto h-[calc(100vh-60px)]">
-                {renderCategories(true)}
-                {renderBrands(true)}
-              </div>
-            </div>
-          </Drawer>
-
-          {/* Sidebar - Desktop */}
-          <aside
-            className="hidden md:block sticky top-20 h-[calc(100vh-5rem)] w-64 bg-white shadow-sm p-4 overflow-y-auto"
-            data-aos="fade-right"
-            data-aos-duration="800"
-          >
-            {renderCategories()}
-            {renderBrands()}
-          </aside>
-
-          {/* Main Content */}
-          <main className="flex-1 p-4 md:p-6">
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
-              {products?.map((product) => (
-                <Product_item
-                  product={product}
-                  handleAddToWish={handleAddToWish}
-                  handleRemoveFromWish={handleRemoveFromWish}
-                  key={product._id}
-                />
-              ))}
-            </div>
-          </main>
         </div>
+      </header>
+
+      <div className="flex flex-1">
+        {/* Sidebar - Mobile Drawer */}
+        <Drawer
+          anchor="left"
+          open={sidebarOpen}
+          onClose={toggleSidebar}
+          className="md:hidden"
+        >
+          <div className="w-72">
+            <div className="p-4 flex justify-between items-center border-b">
+              <h2 className="font-medium">Bộ lọc sản phẩm</h2>
+              <IconButton onClick={toggleSidebar} size="small">
+                <Close />
+              </IconButton>
+            </div>
+            <div className="p-4 overflow-y-auto h-[calc(100vh-60px)]">
+              {renderCategories(true)}
+              {renderBrands(true)}
+            </div>
+          </div>
+        </Drawer>
+
+        {/* Sidebar - Desktop */}
+        <aside
+          className="hidden md:block sticky top-20 h-[calc(100vh-5rem)] w-64 bg-white shadow-sm p-4 overflow-y-auto"
+          data-aos="fade-right"
+          data-aos-duration="800"
+        >
+          {renderCategories()}
+          {renderBrands()}
+        </aside>
+
+        {/* Main Content */}
+        <main className="flex-1 p-4 md:p-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
+            {loading
+              ? Array.from({ length: 10 }).map((_, i) => (
+                  <ProductCardSkeleton key={i} />
+                ))
+              : products?.map((product) => (
+                  <Product_item
+                    key={product._id}
+                    product={product}
+                    handleAddToWish={handleAddToWish}
+                    handleRemoveFromWish={handleRemoveFromWish}
+                  />
+                ))}
+          </div>
+        </main>
       </div>
-    </RootLayout>
+    </div>
   );
 };
 

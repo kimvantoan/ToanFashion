@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import RootLayout from "../layout/RootLayout";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { register } from "../features/user/userSlice";
@@ -62,7 +61,6 @@ const Register = () => {
     }
   }, [status, navigate]);
   return (
-    <RootLayout>
       <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
         <div className="flex border-b border-gray-200">
           <Link
@@ -268,7 +266,6 @@ const Register = () => {
           </form>
         </div>
       </div>
-    </RootLayout>
   );
 };
 

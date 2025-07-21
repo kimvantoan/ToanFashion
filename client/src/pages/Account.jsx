@@ -11,7 +11,6 @@ import AccountContent from "../components/AccountContent";
 import AddressContent from "../components/AddressContent";
 import OrdersContent from "../components/OrdersContent";
 import WishlistContent from "../components/WishlistContent";
-import RootLayout from "../layout/RootLayout";
 import { useDispatch } from "react-redux";
 // Mock data
   
@@ -144,7 +143,6 @@ const handleLogout = async () => {
     }
   };
   return (
-    <RootLayout>
       <div className="mx-20 w-screen">
         <h1
           className="text-3xl font-bold text-center my-2 text-[#c4123f]"
@@ -318,7 +316,6 @@ const handleLogout = async () => {
           </div>
         </div>
       </div>
-    </RootLayout>
   );
 };
 
