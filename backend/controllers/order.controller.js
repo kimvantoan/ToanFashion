@@ -2,6 +2,8 @@ import Order from "../models/order.model.js";
 import Cart from "../models/cart.model.js";
 import Product from "../models/product.model.js";
 import Voucher from "../models/voucher.model.js";
+import { sendOrder } from "../utils/mailer.js";
+import User from "../models/user.model.js";
 // Create order
 export const createOrderUnified = async (req, res) => {
   try {
@@ -19,6 +21,7 @@ export const createOrderUnified = async (req, res) => {
     } = req.body;
 
     const orderItems = [];
+    const user = await User.findById(userId);
 
     // --- Mua từ giỏ hàng ---
     if (fromCart) {
@@ -142,7 +145,7 @@ export const createOrderUnified = async (req, res) => {
     if (fromCart) {
       await Cart.deleteOne({ userId });
     }
-
+    sendOrder(user.email, order);
     res.status(201).json(order);
   } catch (err) {
     console.error(err);
@@ -199,7 +202,7 @@ export const getAllOrders = async (req, res) => {
 // Update delivery status
 export const updateDeliveryStatus = async (req, res) => {
   console.log(req.body);
-  
+
   try {
     const { status } = req.body;
     const order = await Order.findById(req.params.id);
@@ -217,7 +220,6 @@ export const updateDeliveryStatus = async (req, res) => {
 
 // Update payment status
 export const updatePaymentStatus = async (req, res) => {
-  
   try {
     const { status } = req.body;
     const order = await Order.findById(req.params.id);
