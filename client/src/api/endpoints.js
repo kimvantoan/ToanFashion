@@ -49,6 +49,9 @@ const API_ENDPOINTS = {
     remove: (id) => `/wish/${id}`,
     get: "/wish",
   },
+  chatbot: {
+    sendMessage: "/chat",
+  },
 };
 
 export default API_ENDPOINTS;

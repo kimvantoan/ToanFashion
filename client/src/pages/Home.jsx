@@ -121,6 +121,8 @@ import Inventory2Icon from "@mui/icons-material/Inventory2";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 import HeadsetMicIcon from "@mui/icons-material/HeadsetMic";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
+import { useState } from "react";
+import axios from "axios";
 
 const FeatureSection = () => {
   const features = [

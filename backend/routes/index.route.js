@@ -8,6 +8,7 @@ import checkoutRoute  from './checkout.route.js';
 import addressRoute from './address.route.js';
 import cartRoute from './cart.route.js';
 import wishRoute from './wish.route.js';
+import chatAI from './chatAI.route.js';
 const router = express.Router();
 
 router.use('/user', userRoute);
@@ -19,5 +20,5 @@ router.use('/category', categoryRoute);
 router.use('/checkout', checkoutRoute);
 router.use('/address', addressRoute);
 router.use('/wish', wishRoute);
-
+router.use('/chat', chatAI);
 export default router;
