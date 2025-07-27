@@ -4,6 +4,7 @@ const  API_ENDPOINTS = {
         register: '/user/register',
         logout: '/user/logout',
         loginStatus: '/user/loginStatus',
+        allUser: '/user',
     },
     category: {
         getAll: '/category',
@@ -30,7 +31,13 @@ const  API_ENDPOINTS = {
         getOrderById: '/order/:id',
         updateDeliveryStatus: '/order/:id/delivery',
         updatePaymentStatus: '/order/:id/payment',
-    }
+    },
+    chart: {
+        getMonthlyRevenue: '/chart/statistics/revenue',
+        getOrderStatusStats: '/chart/statistics/order-status',
+        getDailyOrderStats: '/chart/statistics/daily-orders',
+        getProductCategoryRatio: '/chart/statistics/product-category-ratio',
+    },
 }
 
 export default API_ENDPOINTS;

@@ -36,10 +36,19 @@ export const logout = createAsyncThunk('user/logout', async (_, { rejectWithValu
   }
 });
 
+export const getAllUsers = createAsyncThunk('user/getAllUsers', async (_, { rejectWithValue }) => {
+  try {
+    const res = await userAPI.getAllUsers();
+    return res.data;
+  } catch (err) {
+    return rejectWithValue(err.response?.data || err.message);
+  }
+});
 const userSlice = createSlice({
   name: 'user',
   initialState: {
     user: null,
+    userList: [],
     isAuthenticated: false,
     loading: false,
     error: null,
@@ -97,6 +106,20 @@ const userSlice = createSlice({
       state.error = action.payload.message || null;
       state.status = 'failed';
     })
+    .addCase(getAllUsers.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    })
+    .addCase(getAllUsers.fulfilled, (state, action) => {
+      state.loading = false;
+      state.userList = action.payload;
+      state.status = 'succeeded';
+    })
+    .addCase(getAllUsers.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload.message || null;
+      state.status = 'failed';
+    });
   }  
 });
 

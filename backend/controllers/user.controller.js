@@ -148,3 +148,12 @@ export const updateUserProfile = async (req, res) => {
     res.status(500).json({ message: "Cập nhật thất bại", error: err.message });
   }
 };
+
+export const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find().select("-password");
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ message: "Lỗi server", error: err.message });
+  }
+}
