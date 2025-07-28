@@ -19,57 +19,33 @@ const sections = [
   },
   {
     id: "orders",
-    label: "Orders",
+    label: "Đơn hàng",
     icon: <ReceiptLongIcon fontSize="small" />,
     href: "/orders",
   },
   {
     id: "products",
-    label: "Products",
+    label: "Sản phẩm",
     icon: <Inventory2Icon fontSize="small" />,
     href: "/products",
   },
   {
     id: "categories",
-    label: "Categories",
+    label: "Danh mục sản phẩm",
     icon: <FolderOpenIcon fontSize="small" />,
     href: "/categories",
   },
   {
     id: "customers",
-    label: "Customers",
+    label: "Khách hàng",
     icon: <GroupIcon fontSize="small" />,
     href: "/customers",
   },
   {
-    id: "reports",
-    label: "Reports",
-    icon: <BarChartIcon fontSize="small" />,
-    href: "/reports",
-  },
-  {
     id: "coupons",
-    label: "Coupons",
+    label: "Mã giảm giá",
     icon: <StarIcon fontSize="small" />,
     href: "/vouchers",
-  },
-  {
-    id: "inbox",
-    label: "Inbox",
-    icon: <MailIcon fontSize="small" />,
-    href: "/inbox",
-  },
-  {
-    id: "personal-settings",
-    label: "Personal Settings",
-    icon: <PersonIcon fontSize="small" />,
-    href: "/personal-settings",
-  },
-  {
-    id: "global-settings",
-    label: "Global Settings",
-    icon: <SettingsIcon fontSize="small" />,
-    href: "/global-settings",
   },
 ];
 

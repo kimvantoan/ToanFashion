@@ -146,7 +146,7 @@ const Voucher = () => {
       <div className="w-full max-w-7xl mx-auto p-6 bg-white">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-semibold text-gray-900">Coupons</h1>
+          <h1 className="text-2xl font-semibold text-gray-900">Mã giảm giá</h1>
           <Button
             variant="contained"
             startIcon={<AddIcon />}
@@ -160,7 +160,7 @@ const Voucher = () => {
               fontWeight: 500,
             }}
           >
-            Create
+            Thêm mới
           </Button>
         </div>
 
@@ -183,10 +183,10 @@ const Voucher = () => {
               },
             }}
           >
-            <Tab label="All Coupons" />
-            <Tab label="Active Coupons" />
-            <Tab label="Inactive Coupons" />
-            <Tab label="Expired Coupons" />
+            <Tab label="Tất cả" />
+            <Tab label="Đang hoạt động" />
+            <Tab label="Không hoạt động" />
+            <Tab label="Đã hết hạn" />
           </Tabs>
         </Box>
 
@@ -199,15 +199,15 @@ const Voucher = () => {
               displayEmpty
               sx={{ backgroundColor: "white" }}
             >
-              <MenuItem value="all">Filter</MenuItem>
-              <MenuItem value="percent">Percentage</MenuItem>
-              <MenuItem value="fixed">Fixed Amount</MenuItem>
+              <MenuItem value="all">Lọc theo loại</MenuItem>
+              <MenuItem value="percent">Phần trăm (%)</MenuItem>
+              <MenuItem value="fixed">Số tiền cố định</MenuItem>
             </Select>
           </FormControl>
 
           <div className="flex-1 relative">
             <TextField
-              placeholder="Search..."
+              placeholder="Tìm kiếm..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               size="small"
@@ -226,11 +226,11 @@ const Voucher = () => {
         <div className="bg-white rounded-lg border border-gray-200">
           {/* Table Header */}
           <div className="grid grid-cols-11 gap-4 p-4 border-b border-gray-200 bg-gray-50 text-sm font-medium text-gray-700">
-            <div className="col-span-4">Coupon Code</div>
-            <div className="col-span-2">Usage</div>
-            <div className="col-span-1">Status</div>
-            <div className="col-span-3">Date</div>
-            <div className="col-span-1">Action</div>
+            <div className="col-span-4">Tên & Mã giảm giá</div>
+            <div className="col-span-2">Số lượt sử dụng</div>
+            <div className="col-span-1">Trạng thái</div>
+            <div className="col-span-3">Thời gian</div>
+            <div className="col-span-1">Thao tác</div>
           </div>
 
           {/* Table Body */}
@@ -250,11 +250,55 @@ const Voucher = () => {
               </div>
 
               <div className="col-span-2 flex items-center">
-                <span className="text-gray-900">{voucher.usedCount} times</span>
+                <span className="text-gray-900">{voucher.usedCount} lượt</span>
               </div>
 
               <div className="col-span-1 flex items-center">
-                {getStatusChip(voucher)}
+                {/* Trạng thái tiếng Việt */}
+                {(() => {
+                  const now = new Date();
+                  const endDate = new Date(voucher.endDate);
+                  if (now > endDate) {
+                    return (
+                      <Chip
+                        label="Đã hết hạn"
+                        size="small"
+                        sx={{
+                          backgroundColor: "#f3f4f6",
+                          color: "#6b7280",
+                          fontWeight: 500,
+                          fontSize: "0.75rem",
+                        }}
+                      />
+                    );
+                  }
+                  if (voucher.active) {
+                    return (
+                      <Chip
+                        label="Đang hoạt động"
+                        size="small"
+                        sx={{
+                          backgroundColor: "#dcfce7",
+                          color: "#166534",
+                          fontWeight: 500,
+                          fontSize: "0.75rem",
+                        }}
+                      />
+                    );
+                  }
+                  return (
+                    <Chip
+                      label="Không hoạt động"
+                      size="small"
+                      sx={{
+                        backgroundColor: "#fef9c3",
+                        color: "#92400e",
+                        fontWeight: 500,
+                        fontSize: "0.75rem",
+                      }}
+                    />
+                  );
+                })()}
               </div>
 
               <div className="col-span-3 flex items-center">
@@ -308,7 +352,7 @@ const Voucher = () => {
             />
           </div>
           <div className="text-sm text-gray-600">
-            {filteredVouchers.length} Results
+            {filteredVouchers.length} kết quả
           </div>
         </div>
       </div>

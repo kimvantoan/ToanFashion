@@ -91,8 +91,8 @@ const EditVoucher = () => {
   };
 
   const discountTypes = [
-    { value: "fixed", label: "Fixed Discount", icon: <Receipt /> },
-    { value: "percent", label: "Percentage Discount", icon: <Percent /> },
+    { value: "fixed", label: "Giảm giá cố định", icon: <Receipt /> },
+    { value: "percent", label: "Giảm theo phần trăm", icon: <Percent /> },
   ];
 
   if (!voucher) {
@@ -110,7 +110,7 @@ const EditVoucher = () => {
                 <ArrowBack />
               </IconButton>
               <Typography variant="h4" className="font-semibold text-gray-900">
-                Edit Coupon
+                Chỉnh sửa mã giảm giá
               </Typography>
             </div>
             <div className="flex gap-2">
@@ -119,34 +119,34 @@ const EditVoucher = () => {
                 className="text-gray-600 border-gray-300"
                 onClick={() => navigate("/vouchers")}
               >
-                Cancel
+                Hủy
               </Button>
               <Button
                 variant="contained"
                 className="bg-blue-600 hover:bg-blue-700"
                 onClick={handleSubmit}
               >
-                Save
+                Lưu
               </Button>
             </div>
           </div>
 
           <Paper className="p-6 shadow-sm">
             <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Coupon Information */}
+              {/* Thông tin voucher */}
               <div>
                 <Typography variant="h6" className="font-semibold mb-2">
-                  Coupon Information
+                  Thông tin mã giảm giá
                 </Typography>
                 <Typography variant="body2" className="text-gray-600 mb-4">
-                  Code will be used by users in checkout
+                  Mã này sẽ được khách hàng sử dụng khi thanh toán
                 </Typography>
 
                 <Grid container spacing={3}>
                   <Grid item xs={12} md={6}>
                     <TextField
                       fullWidth
-                      label="Coupon Code"
+                      label="Mã giảm giá"
                       value={formData.code}
                       onChange={(e) =>
                         handleInputChange("code", e.target.value.toUpperCase())
@@ -160,13 +160,13 @@ const EditVoucher = () => {
                   <Grid item xs={12} md={6}>
                     <TextField
                       fullWidth
-                      label="Coupon Name"
+                      label="Tên chương trình"
                       size="small"
                       value={formData.name}
                       onChange={(e) =>
                         handleInputChange("name", e.target.value)
                       }
-                      placeholder="Free Shipping"
+                      placeholder="Miễn phí vận chuyển"
                       className="bg-white"
                     />
                   </Grid>
@@ -175,10 +175,10 @@ const EditVoucher = () => {
 
               <Divider />
 
-              {/* Coupon Type */}
+              {/* Loại giảm giá */}
               <div>
                 <Typography variant="h6" className="font-semibold mb-2">
-                  Coupon Type
+                  Loại giảm giá
                 </Typography>
                 <Grid container spacing={2}>
                   {discountTypes.map((type) => (
@@ -213,18 +213,18 @@ const EditVoucher = () => {
                 </Grid>
               </div>
 
-              {/* Discount Configuration */}
+              {/* Cấu hình giảm giá */}
               <Grid container spacing={3}>
                 <Grid item xs={12} md={6}>
                   <TextField
                     fullWidth
-                    label="Discount Value"
+                    label="Giá trị giảm"
                     type="number"
                     value={formData.discountValue}
                     onChange={(e) =>
                       handleInputChange("discountValue", Number(e.target.value))
                     }
-                    placeholder="Amount"
+                    placeholder="Số tiền hoặc %"
                     required
                     size="small"
                     className="bg-white"
@@ -233,7 +233,7 @@ const EditVoucher = () => {
                 <Grid item xs={12} md={6}>
                   <TextField
                     fullWidth
-                    label="Minimum Order Value"
+                    label="Giá trị đơn hàng tối thiểu"
                     type="number"
                     size="small"
                     value={formData.minOrderValue}
@@ -248,7 +248,7 @@ const EditVoucher = () => {
                   <Grid item xs={12} md={6}>
                     <TextField
                       fullWidth
-                      label="Maximum Discount"
+                      label="Giảm tối đa"
                       type="number"
                       value={formData.maxDiscount || ""}
                       onChange={(e) =>
@@ -257,7 +257,7 @@ const EditVoucher = () => {
                           e.target.value ? Number(e.target.value) : null
                         )
                       }
-                      placeholder="Optional"
+                      placeholder="Không bắt buộc"
                       size="small"
                       className="bg-white"
                     />
@@ -267,15 +267,15 @@ const EditVoucher = () => {
 
               <Divider />
 
-              {/* Duration */}
+              {/* Thời gian áp dụng */}
               <div>
                 <Typography variant="h6" className="font-semibold mb-4">
-                  Duration
+                  Thời gian áp dụng
                 </Typography>
                 <Grid container spacing={3}>
                   <Grid item xs={12} md={6}>
                     <DatePicker
-                      label="Start Date"
+                      label="Ngày bắt đầu"
                       value={formData.startDate}
                       size="small"
                       required
@@ -285,7 +285,7 @@ const EditVoucher = () => {
                   </Grid>
                   <Grid item xs={12} md={6}>
                     <DatePicker
-                      label="End Date"
+                      label="Ngày kết thúc"
                       size="small"
                       required
                       value={formData.endDate}
@@ -298,10 +298,10 @@ const EditVoucher = () => {
 
               <Divider />
 
-              {/* Usage Limits */}
+              {/* Giới hạn lượt sử dụng */}
               <div>
                 <Typography variant="h6" className="font-semibold mb-4">
-                  Usage Limits
+                  Giới hạn lượt sử dụng
                 </Typography>
 
                 <FormControlLabel
@@ -313,7 +313,7 @@ const EditVoucher = () => {
                       }
                     />
                   }
-                  label="Don't limit amount of uses"
+                  label="Không giới hạn số lượt sử dụng"
                   className="mb-4"
                 />
 
@@ -322,7 +322,7 @@ const EditVoucher = () => {
                     <Grid item xs={12} md={6}>
                       <TextField
                         fullWidth
-                        label="Amount of uses"
+                        label="Số lượt sử dụng"
                         type="number"
                         value={formData.usageLimit}
                         onChange={(e) =>
@@ -339,7 +339,7 @@ const EditVoucher = () => {
                 )}
               </div>
 
-              {/* Active Status */}
+              {/* Trạng thái kích hoạt */}
               <FormControlLabel
                 control={
                   <Checkbox
@@ -349,7 +349,7 @@ const EditVoucher = () => {
                     }
                   />
                 }
-                label="Active"
+                label="Kích hoạt"
                 className="mb-4"
               />
 
@@ -360,14 +360,14 @@ const EditVoucher = () => {
                   className="text-gray-600 border-gray-300"
                   onClick={() => navigate("/vouchers")}
                 >
-                  Cancel
+                  Hủy
                 </Button>
                 <Button
                   type="submit"
                   variant="contained"
                   className="bg-blue-600 hover:bg-blue-700"
                 >
-                  Save
+                  Lưu
                 </Button>
               </div>
             </form>

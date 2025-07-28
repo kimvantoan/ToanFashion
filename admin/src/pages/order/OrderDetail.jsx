@@ -9,61 +9,6 @@ import {
 } from "@mui/icons-material";
 
 // Mock data based on your schema
-const orderData = {
-  _id: "507f1f77bcf86cd799439011",
-  userId: {
-    _id: "507f1f77bcf86cd799439012",
-    name: "John Doe",
-    email: "john.doe@example.com",
-  },
-  items: [
-    {
-      productId: "507f1f77bcf86cd799439013",
-      name: "Premium Cotton T-Shirt",
-      color: "Navy Blue",
-      size: "L",
-      quantity: 2,
-      price: 29.99,
-      image: "/placeholder.svg?height=80&width=80",
-    },
-    {
-      productId: "507f1f77bcf86cd799439014",
-      name: "Denim Jeans",
-      color: "Dark Blue",
-      size: "32",
-      quantity: 1,
-      price: 79.99,
-      image: "/placeholder.svg?height=80&width=80",
-    },
-    {
-      productId: "507f1f77bcf86cd799439015",
-      name: "Sneakers",
-      color: "White",
-      size: "42",
-      quantity: 1,
-      price: 129.99,
-      image: "/placeholder.svg?height=80&width=80",
-    },
-  ],
-  shippingAddress: {
-    street: "123 Main Street",
-    city: "New York",
-    state: "NY",
-    zipCode: "10001",
-    country: "United States",
-  },
-  paymentMethod: "PayPal",
-  paymentStatus: "paid",
-  deliveryStatus: "shipped",
-  totalAmount: 269.96,
-  voucher: {
-    _id: "507f1f77bcf86cd799439016",
-    code: "SAVE20",
-    discount: 20,
-  },
-  createdAt: "2024-01-15T10:30:00Z",
-  updatedAt: "2024-01-16T14:20:00Z",
-};
 
 const getStatusColor = (status, type) => {
   if (type === "payment") {
@@ -146,16 +91,16 @@ export default function OrderDetail() {
             onClick={() => navigate(-1)}
           >
             <ArrowBack className="w-5 h-5" />
-            Back to Orders
+            Quay lại danh sách đơn hàng
           </button>
 
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                Order #{order?._id}
+                Đơn hàng #{order?._id}
               </h1>
               <p className="text-gray-600">
-                Placed on {formatDate(order?.createdAt)}
+                Đặt ngày {formatDate(order?.createdAt)}
               </p>
             </div>
 
@@ -165,7 +110,7 @@ export default function OrderDetail() {
                 className="flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
               >
                 <Print className="w-4 h-4" />
-                Print
+                In hóa đơn
               </button>
             </div>
           </div>
@@ -179,20 +124,24 @@ export default function OrderDetail() {
               <div className="px-6 py-4 ">
                 <div className="flex items-center gap-2">
                   <Receipt className="text-blue-600 w-5 h-5" />
-                  <h2 className="text-lg font-semibold">Order Status</h2>
+                  <h2 className="text-lg font-semibold">Trạng thái đơn hàng</h2>
                 </div>
               </div>
               <div className="p-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div className="text-center p-4 bg-gray-50 rounded-lg">
-                    <p className="text-sm text-gray-600 mb-2">Payment Status</p>
+                    <p className="text-sm text-gray-600 mb-2">Trạng thái thanh toán</p>
                     <span
                       className={`inline-flex px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
                         order?.paymentStatus,
                         "payment"
                       )}`}
                     >
-                      {order?.paymentStatus.toUpperCase()}
+                      {order?.paymentStatus === "paid"
+                        ? "Đã thanh toán"
+                        : order?.paymentStatus === "pending" || order?.paymentStatus === "unpaid"
+                        ? "Chưa thanh toán"
+                        : order?.paymentStatus}
                     </span>
                   </div>
                   <Box
@@ -202,21 +151,31 @@ export default function OrderDetail() {
                     borderRadius={2}
                   >
                     <Typography variant="body2" color="textSecondary" mb={1}>
-                      Delivery Status
+                      Trạng thái giao hàng
                     </Typography>
 
                     <FormControl size="small" fullWidth>
-                      <InputLabel id="delivery-status-label">Status</InputLabel>
+                      <InputLabel id="delivery-status-label">Trạng thái</InputLabel>
                       <Select
                         labelId="delivery-status-label"
                         value={order?.deliveryStatus || ""}
-                        label="Status"
+                        label="Trạng thái"
                         onChange={(e) => onChangeStatus(e.target.value)}
                       >
                         {DELIVERY_STATUS_OPTIONS.map((status) => (
                           <MenuItem key={status} value={status}>
                             <Chip
-                              label={status.toUpperCase()}
+                              label={
+                                status === "processing"
+                                  ? "Đang xử lý"
+                                  : status === "shipping"
+                                  ? "Đang giao"
+                                  : status === "delivered"
+                                  ? "Đã giao"
+                                  : status === "cancelled"
+                                  ? "Đã hủy"
+                                  : status
+                              }
                               color={getStatusColor(status)}
                               size="small"
                             />
@@ -233,7 +192,7 @@ export default function OrderDetail() {
             <div className="bg-white rounded-lg shadow-sm mb-6">
               <div className="px-6 py-4 ">
                 <h2 className="text-lg font-semibold">
-                  Order Items ({order?.items.length})
+                  Sản phẩm ({order?.items.length})
                 </h2>
               </div>
               <div className="overflow-x-auto">
@@ -241,16 +200,16 @@ export default function OrderDetail() {
                   <thead>
                     <tr className="bg-gray-50 ">
                       <th className="px-6 py-3 text-left text-sm font-medium text-gray-500">
-                        Product
+                        Sản phẩm
                       </th>
                       <th className="px-6 py-3 text-center text-sm font-medium text-gray-500">
-                        Quantity
+                        Số lượng
                       </th>
                       <th className="px-6 py-3 text-right text-sm font-medium text-gray-500">
-                        Price
+                        Đơn giá
                       </th>
                       <th className="px-6 py-3 text-right text-sm font-medium text-gray-500">
-                        Total
+                        Thành tiền
                       </th>
                     </tr>
                   </thead>
@@ -312,23 +271,23 @@ export default function OrderDetail() {
             {/* Order Summary */}
             <div className="bg-white rounded-lg shadow-sm  mb-6">
               <div className="px-6 py-4 border-b border-gray-200  ">
-                <h2 className="text-lg font-semibold">Order Summary</h2>
+                <h2 className="text-lg font-semibold">Tóm tắt đơn hàng</h2>
               </div>
               <div className="p-6">
                 <div className="space-y-4">
                   {order?.voucher && (
                     <div className="flex justify-between py-2 text-green-600">
-                      <span>Discount ({order?.voucher.code})</span>
+                      <span>Giảm giá ({order?.voucher.code})</span>
                     </div>
                   )}
 
                   <div className="flex justify-between py-2">
-                    <span className="text-gray-600">Shipping</span>
-                    <span className="text-gray-900">FREE</span>
+                    <span className="text-gray-600">Phí vận chuyển</span>
+                    <span className="text-gray-900">Miễn phí</span>
                   </div>
                   <div className="flex justify-between py-3 bg-blue-50 px-4 rounded-lg">
                     <span className="text-lg font-bold text-blue-900">
-                      Total
+                      Tổng cộng
                     </span>
                     <span className="text-lg font-bold text-blue-900">
                       {formatPrice(order?.totalAmount)}
@@ -343,7 +302,7 @@ export default function OrderDetail() {
               <div className="px-6 py-4 border-b border-gray-200">
                 <div className="flex items-center gap-2">
                   <Payment className="text-blue-600 w-5 h-5" />
-                  <h2 className="text-lg font-semibold">Payment Information</h2>
+                  <h2 className="text-lg font-semibold">Thông tin thanh toán</h2>
                 </div>
               </div>
               <div className="p-6">
@@ -355,7 +314,13 @@ export default function OrderDetail() {
                   </div>
                   <div>
                     <p className="font-medium text-gray-900">
-                      {order?.paymentMethod}
+                      {order?.paymentMethod === "PayPal"
+                        ? "PayPal"
+                        : order?.paymentMethod === "VNPAY"
+                        ? "VNPAY"
+                        : order?.paymentMethod === "COD"
+                        ? "Thanh toán khi nhận hàng"
+                        : order?.paymentMethod}
                     </p>
                   </div>
                 </div>
@@ -367,7 +332,7 @@ export default function OrderDetail() {
               <div className="px-6 py-4 border-b border-gray-200">
                 <div className="flex items-center gap-2">
                   <Person className="text-blue-600 w-5 h-5" />
-                  <h2 className="text-lg font-semibold">Buyer Information</h2>
+                  <h2 className="text-lg font-semibold">Thông tin người mua</h2>
                 </div>
               </div>
               <div className="p-6">
@@ -391,7 +356,7 @@ export default function OrderDetail() {
               <div className="px-6 py-4 border-b border-gray-200">
                 <div className="flex items-center gap-2">
                   <LocalShipping className="text-blue-600 w-5 h-5" />
-                  <h2 className="text-lg font-semibold">Shipping Address</h2>
+                  <h2 className="text-lg font-semibold">Địa chỉ giao hàng</h2>
                 </div>
               </div>
               <div className="p-6">
@@ -404,7 +369,7 @@ export default function OrderDetail() {
                     {order?.shippingAddress.ward},{order?.shippingAddress.state}{" "}
                     {order?.shippingAddress.city}
                     <br />
-                    {"note: "}
+                    {"Ghi chú: "}
                     {order?.shippingAddress.note}
                   </p>
                 </div>

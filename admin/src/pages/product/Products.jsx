@@ -57,9 +57,9 @@ const Products = () => {
     );
 
   const getStockStatus = (stock) => {
-    if (stock === 0) return { label: "Out of Stock", color: "error" };
-    if (stock < 20) return { label: `${stock} in stock`, color: "warning" };
-    return { label: `${stock} in stock`, color: "success" };
+    if (stock === 0) return { label: "Hết hàng", color: "error" };
+    if (stock < 20) return { label: `${stock} còn lại`, color: "warning" };
+    return { label: `${stock} còn lại`, color: "success" };
   };
 
   const handleMenuClick = (event, productId) => {
@@ -122,7 +122,7 @@ const Products = () => {
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <Typography variant="h4" className="font-bold text-gray-900">
-            Products
+            Sản phẩm
           </Typography>
           <Button
             variant="contained"
@@ -130,7 +130,7 @@ const Products = () => {
             startIcon={<Add />}
             className="bg-blue-600 hover:bg-blue-700"
           >
-            Add Product
+            Thêm sản phẩm
           </Button>
         </div>
 
@@ -140,7 +140,7 @@ const Products = () => {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <TextField
               fullWidth
-              placeholder="Search products..."
+              placeholder="Tìm kiếm sản phẩm..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -154,7 +154,7 @@ const Products = () => {
             startIcon={<FilterList />}
             className="text-gray-600 border-gray-300"
           >
-            Filter
+            Bộ lọc
           </Button>
         </div>
 
@@ -165,7 +165,7 @@ const Products = () => {
               <TableHead className="bg-gray-50">
                 <TableRow>
                   <TableCell className="font-semibold text-gray-700">
-                    Product
+                    Sản phẩm
                   </TableCell>
                   <TableCell className="font-semibold text-gray-700">
                     <TableSortLabel
@@ -173,7 +173,7 @@ const Products = () => {
                       direction={sortBy === "inventory" ? sortDirection : "asc"}
                       onClick={() => handleSort("inventory")}
                     >
-                      Inventory
+                      Tồn kho
                     </TableSortLabel>
                   </TableCell>
                   <TableCell className="font-semibold text-gray-700">
@@ -182,20 +182,20 @@ const Products = () => {
                       direction={sortBy === "price" ? sortDirection : "asc"}
                       onClick={() => handleSort("price")}
                     >
-                      Price
+                      Giá bán
                     </TableSortLabel>
                   </TableCell>
                   <TableCell className="font-semibold text-gray-700">
-                    Rating
+                    Đánh giá
                   </TableCell>
                   <TableCell className="font-semibold text-gray-700">
-                    Brand
+                    Thương hiệu
                   </TableCell>
                   <TableCell className="font-semibold text-gray-700">
-                    Category
+                    Danh mục
                   </TableCell>
                   <TableCell className="font-semibold text-gray-700">
-                    Actions
+                    Thao tác
                   </TableCell>
                 </TableRow>
               </TableHead>
@@ -246,7 +246,7 @@ const Products = () => {
                         <div className="flex items-center gap-1">
                           <span>{product.rating.toFixed(1)}</span>
                           <span className="text-sm text-gray-500">
-                            ({product.numReviews} votes)
+                            ({product.numReviews} lượt)
                           </span>
                         </div>
                       </TableCell>
@@ -278,9 +278,9 @@ const Products = () => {
           {/* Pagination */}
           <Box className="flex justify-between items-center p-4 border-t">
             <Typography variant="body2" className="text-gray-600">
-              Showing {(page - 1) * itemsPerPage + 1} to{" "}
-              {Math.min(page * itemsPerPage, processedProducts.length)} of{" "}
-              {processedProducts.length} results
+              Hiển thị từ {(page - 1) * itemsPerPage + 1} đến{" "}
+              {Math.min(page * itemsPerPage, processedProducts.length)} trong tổng số{" "}
+              {processedProducts.length} sản phẩm
             </Typography>
             <Pagination
               count={Math.ceil(processedProducts.length / itemsPerPage)}
@@ -299,11 +299,11 @@ const Products = () => {
         >
           <MenuItem onClick={() => { handleMenuClose(); navigate(`/product/${selectedProductId}`); }}>
             <Edit  className="mr-2" fontSize="small" />
-            Edit
+            Chỉnh sửa
           </MenuItem>
           <MenuItem onClick={() => { handleMenuClose(); handleDelete(); }} className="text-red-600">
             <Delete   className="mr-2" fontSize="small" />
-            Delete
+            Xóa
           </MenuItem>
         </Menu>
       </div>

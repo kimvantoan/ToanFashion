@@ -51,7 +51,7 @@ const Login = () => {
               component="h1"
               className="font-bold text-gray-900 mb-4"
             >
-              Sign In
+              Đăng nhập
             </Typography>
           </Box>
 
@@ -67,7 +67,7 @@ const Login = () => {
                 fullWidth
                 type="email"
                 required
-                placeholder="Enter Email Address"
+                placeholder="Nhập địa chỉ email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 variant="outlined"
@@ -98,13 +98,13 @@ const Login = () => {
                 variant="body2"
                 className="text-gray-700 font-medium mb-2"
               >
-                Password
+                Mật khẩu
               </Typography>
               <TextField
                 fullWidth
                 type="password"
                 required
-                placeholder="Enter Password"
+                placeholder="Nhập mật khẩu"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 variant="outlined"
@@ -146,7 +146,7 @@ const Login = () => {
               }}
               loading={loading}
             >
-              Sign In
+              Đăng nhập
             </Button>
           </form>
         </Paper>

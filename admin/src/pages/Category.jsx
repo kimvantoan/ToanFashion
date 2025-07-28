@@ -123,7 +123,7 @@ const Category = () => {
               component="h1"
               className="font-bold text-gray-900"
             >
-              Categories
+              Danh mục
             </Typography>
             <Button
               variant="contained"
@@ -139,7 +139,7 @@ const Category = () => {
                 fontWeight: 500,
               }}
             >
-              Add Category
+              Thêm danh mục
             </Button>
           </div>
 
@@ -198,8 +198,8 @@ const Category = () => {
           <DialogTitle className="border-b border-gray-200">
             <Typography variant="h6" component="span" className="font-medium">
               {dialogType === "create"
-                ? "Create Category"
-                : `Edit Category: ${editingCategory?.name}`}
+                ? "Thêm danh mục"
+                : `Chỉnh sửa: ${editingCategory?.name}`}
             </Typography>
           </DialogTitle>
 
@@ -207,7 +207,7 @@ const Category = () => {
             <div className="flex flex-col gap-4 mt-2">
               <TextField
                 fullWidth
-                label="Category Name"
+                label="Tên danh mục"
                 value={form.name}
                 onChange={(e) => handleFormChange("name", e.target.value)}
                 variant="outlined"
@@ -216,7 +216,7 @@ const Category = () => {
               />
               <TextField
                 fullWidth
-                label="Description"
+                label="Mô tả"
                 value={form.description}
                 onChange={(e) =>
                   handleFormChange("description", e.target.value)
@@ -228,7 +228,7 @@ const Category = () => {
               />
               <div>
                 <Typography variant="body2" className="text-gray-600 mb-2">
-                  Category Image
+                  Ảnh danh mục
                 </Typography>
                 <Paper
                   className="border-2 border-dashed border-gray-300 p-4 text-center hover:border-gray-400 transition-colors cursor-pointer"
@@ -248,14 +248,14 @@ const Category = () => {
                     variant="body2"
                     className="text-blue-600 font-medium"
                   >
-                    {dialogType === "create" ? "Upload Image" : "Change Image"}
+                    {dialogType === "create" ? "Tải ảnh lên" : "Đổi ảnh"}
                   </Typography>
                   <Typography variant="caption" className="text-gray-500">
                     {form.image
                       ? typeof form.image === "string"
                         ? form.image
-                        : form.image.name // Hiển thị tên file nếu là file
-                      : "Or drag and drop files"}
+                        : form.image.name
+                      : "Hoặc kéo thả ảnh vào đây"}
                   </Typography>
                   {/* Hiển thị ảnh preview nếu đã chọn */}
                   {(form.image ||
@@ -287,14 +287,14 @@ const Category = () => {
           </DialogContent>
           <DialogActions className="p-4 border-t border-gray-200">
             <Button onClick={handleCloseDialog} className="text-gray-600">
-              Cancel
+              Hủy
             </Button>
             <Button
               onClick={handleSave}
               variant="contained"
               className="bg-blue-600"
             >
-              {dialogType === "create" ? "Create" : "Save Changes"}
+              {dialogType === "create" ? "Thêm mới" : "Lưu thay đổi"}
             </Button>
           </DialogActions>
         </Dialog>

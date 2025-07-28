@@ -249,15 +249,15 @@ const EditProduct = () => {
               className="flex items-center text-gray-600 hover:text-blue-600 cursor-pointer"
             >
               <KeyboardArrowLeftIcon className="h-5 w-5" />
-              <span>Back</span>
+              <span>Quay lại</span>
             </button>
             <h1 className="ml-4 text-2xl font-semibold text-gray-900">
-              Edit Product
+              Chỉnh sửa sản phẩm
             </h1>
           </div>
           <div className="flex space-x-3">
             <button className="px-4 py-2 border border-gray-300 rounded-button text-gray-700 bg-white hover:bg-gray-50 cursor-pointer whitespace-nowrap">
-              Cancel
+              Hủy
             </button>
             <Button
               variant="contained"
@@ -265,16 +265,16 @@ const EditProduct = () => {
               onClick={handleUpdate}
               className="px-4 py-2 bg-blue-600 text-white rounded-button hover:bg-blue-700 cursor-pointer whitespace-nowrap"
             >
-              Save
+              Lưu
             </Button>
           </div>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
-            {/* Product Information */}
+            {/* Thông tin sản phẩm */}
             <div className="bg-white rounded-lg shadow-sm p-6">
               <h2 className="text-lg font-medium text-gray-900 mb-4">
-                Product Information
+                Thông tin sản phẩm
               </h2>
               <div className="space-y-4">
                 <div>
@@ -282,7 +282,7 @@ const EditProduct = () => {
                     htmlFor="productName"
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
-                    Product Name <span className="text-red-500">*</span>
+                    Tên sản phẩm <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -290,7 +290,7 @@ const EditProduct = () => {
                     value={productName}
                     onChange={handleNameChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="Enter product name"
+                    placeholder="Nhập tên sản phẩm"
                   />
                 </div>
                 <div>
@@ -298,7 +298,7 @@ const EditProduct = () => {
                     htmlFor="productSlug"
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
-                    Slug <span className="text-red-500">*</span>
+                    Đường dẫn (slug) <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -306,7 +306,7 @@ const EditProduct = () => {
                     value={productSlug}
                     onChange={(e) => setProductSlug(e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="product-slug"
+                    placeholder="duong-dan-san-pham"
                   />
                 </div>
                 <div>
@@ -314,7 +314,7 @@ const EditProduct = () => {
                     htmlFor="productDescription"
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
-                    Product Description
+                    Mô tả sản phẩm
                   </label>
                   <textarea
                     id="productDescription"
@@ -322,14 +322,14 @@ const EditProduct = () => {
                     onChange={(e) => setProductDescription(e.target.value)}
                     rows={4}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="Enter product description"
+                    placeholder="Nhập mô tả sản phẩm"
                   ></textarea>
                 </div>
               </div>
             </div>
-            {/* Images */}
+            {/* Ảnh sản phẩm */}
             <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-lg font-medium text-gray-900 mb-4">Images</h2>
+              <h2 className="text-lg font-medium text-gray-900 mb-4">Ảnh sản phẩm</h2>
               <input
                 type="file"
                 id="fileInput"
@@ -352,10 +352,10 @@ const EditProduct = () => {
                     onClick={() => fileInputRef.current?.click()}
                     className="px-4 py-2 bg-blue-600 text-white rounded-button hover:bg-blue-700 cursor-pointer whitespace-nowrap"
                   >
-                    Add File
+                    Thêm ảnh
                   </button>
                   <p className="text-sm text-gray-500">
-                    Or drag and drop files
+                    Hoặc kéo thả ảnh vào đây
                   </p>
                 </div>
               </div>
@@ -408,22 +408,22 @@ const EditProduct = () => {
                 </div>
               )}
             </div>
-            {/* Price */}
+            {/* Giá sản phẩm */}
             <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-lg font-medium text-gray-900 mb-4">Price</h2>
+              <h2 className="text-lg font-medium text-gray-900 mb-4">Giá sản phẩm</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
                   <label
                     htmlFor="basePrice"
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
-                    Base Price <span className="text-red-500">*</span>
+                    Giá gốc <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="number"
                     id="basePrice"
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="Enter price"
+                    placeholder="Nhập giá gốc"
                     value={basePrice}
                     onChange={(e) => setBasePrice(e.target.value)}
                   />
@@ -433,23 +433,23 @@ const EditProduct = () => {
                     htmlFor="discountPrice"
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
-                    Discount Price
+                    Giá khuyến mãi
                   </label>
                   <input
                     type="number"
                     id="discountPrice"
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="Price after discount"
+                    placeholder="Giá sau khuyến mãi"
                     value={discountPrice}
                     onChange={(e) => setDiscountPrice(e.target.value)}
                   />
                 </div>
               </div>
             </div>
-            {/* Variants */}
+            {/* Biến thể */}
             <div className="bg-white rounded-lg shadow-sm p-6">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-medium text-gray-900">Variants</h2>
+                <h2 className="text-lg font-medium text-gray-900">Biến thể</h2>
                 <div className="relative inline-block w-10 mr-2 align-middle select-none">
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input
@@ -482,7 +482,7 @@ const EditProduct = () => {
                             } mr-2 text-gray-500`}
                           ></i>
                           <span className="font-medium text-gray-700">
-                            {variant.color || "New Variant"}
+                            {variant.color || "Biến thể mới"}
                           </span>
                         </div>
                         {variants.length > 1 && (
@@ -504,7 +504,7 @@ const EditProduct = () => {
                               htmlFor={`colorVariant-${variant.id}`}
                               className="block text-sm font-medium text-gray-700 mb-1"
                             >
-                              Color
+                              Màu sắc
                             </label>
                             <input
                               type="text"
@@ -520,12 +520,12 @@ const EditProduct = () => {
                                 );
                               }}
                               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                              placeholder="e.g. Blue"
+                              placeholder="VD: Xanh dương"
                             />
                           </div>
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
-                              Sizes with Stock
+                              Size và tồn kho
                             </label>
                             <div className="flex flex-wrap gap-2 mb-3">
                               {["S", "M", "L", "XL", "XXL"].map((size) => (
@@ -566,7 +566,7 @@ const EditProduct = () => {
                                       )
                                     }
                                     className="w-24 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                                    placeholder="Stock"
+                                    placeholder="Tồn kho"
                                     min="0"
                                   />
                                 </div>
@@ -581,7 +581,7 @@ const EditProduct = () => {
                     onClick={addVariant}
                     className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center cursor-pointer whitespace-nowrap"
                   >
-                    <i className="fas fa-plus mr-1"></i> Add Another Variant
+                    <i className="fas fa-plus mr-1"></i> Thêm biến thể
                   </button>
                 </div>
               )}
@@ -589,10 +589,10 @@ const EditProduct = () => {
             {/* Shipping */}
           </div>
           <div className="space-y-6">
-            {/* Categories */}
+            {/* Danh mục */}
             <div className="bg-white rounded-lg shadow-sm p-6">
               <h2 className="text-lg font-medium text-gray-900 mb-4">
-                Categories
+                Danh mục
               </h2>
               <div className="space-y-2">
                 {categories.map((category) => (
@@ -615,16 +615,16 @@ const EditProduct = () => {
                 ))}
               </div>
             </div>
-            {/* Brand */}
+            {/* Thương hiệu */}
             <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-lg font-medium text-gray-900 mb-4">Brand</h2>
+              <h2 className="text-lg font-medium text-gray-900 mb-4">Thương hiệu</h2>
               <div>
                 <select
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                   value={selectedBrand}
                   onChange={(e) => setSelectedBrand(e.target.value)}
                 >
-                  <option value="">Select brand</option>
+                  <option value="">Chọn thương hiệu</option>
                   {BRANDS.map((brand) => (
                     <option key={brand._id} value={brand.name}>
                       {brand.name}
@@ -637,13 +637,13 @@ const EditProduct = () => {
         </div>
         <div className="mt-6 flex justify-end space-x-3">
           <button className="px-4 py-2 border border-gray-300 rounded-button text-gray-700 bg-white hover:bg-gray-50 cursor-pointer whitespace-nowrap">
-            Cancel
+            Hủy
           </button>
           <button
             onClick={handleUpdate}
             className="px-4 py-2 bg-blue-600 text-white rounded-button hover:bg-blue-700 cursor-pointer whitespace-nowrap"
           >
-            Save
+            Lưu
           </button>
         </div>
       </div>

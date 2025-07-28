@@ -1,5 +1,3 @@
-import React from "react";
-
 import { useState, useMemo } from "react";
 import {
   Table,
@@ -134,41 +132,41 @@ const getStatusColor = (status, type) => {
           {/* Header */}
           <div className="flex justify-between items-center mb-6">
             <Typography variant="h4" className="font-bold text-gray-900">
-              Orders
+              Đơn hàng
             </Typography>
           </div>
 
-          {/* Filters and Search */}
+          {/* Bộ lọc và tìm kiếm */}
           <div className="flex gap-4 mb-6">
             <FormControl size="small" className="min-w-32">
-              <InputLabel>Payment</InputLabel>
+              <InputLabel>Thanh toán</InputLabel>
               <Select
                 value={paymentFilter}
-                label="Payment"
+                label="Thanh toán"
                 onChange={(e) => setPaymentFilter(e.target.value)}
               >
-                <MenuItem value="all">All</MenuItem>
-                <MenuItem value="paid">Paid</MenuItem>
-                <MenuItem value="pending">Pending</MenuItem>
+                <MenuItem value="all">Tất cả</MenuItem>
+                <MenuItem value="paid">Đã thanh toán</MenuItem>
+                <MenuItem value="pending">Chưa thanh toán</MenuItem>
               </Select>
             </FormControl>
 
             <FormControl size="small" className="min-w-32">
-              <InputLabel>Delivery</InputLabel>
+              <InputLabel>Giao hàng</InputLabel>
               <Select
                 value={deliveryFilter}
-                label="Delivery"
+                label="Giao hàng"
                 onChange={(e) => setDeliveryFilter(e.target.value)}
               >
-                <MenuItem value="all">All</MenuItem>
-                <MenuItem value="ready">Ready</MenuItem>
-                <MenuItem value="shipped">Shipped</MenuItem>
-                <MenuItem value="received">Received</MenuItem>
+                <MenuItem value="all">Tất cả</MenuItem>
+                <MenuItem value="ready">Sẵn sàng</MenuItem>
+                <MenuItem value="shipped">Đã gửi</MenuItem>
+                <MenuItem value="received">Đã nhận</MenuItem>
               </Select>
             </FormControl>
             <TextField
               size="small"
-              placeholder="Search..."
+              placeholder="Tìm kiếm..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               InputProps={{
@@ -182,7 +180,7 @@ const getStatusColor = (status, type) => {
             />
           </div>
 
-          {/* Data Table */}
+          {/* Bảng dữ liệu */}
           <Paper className="shadow-sm">
             <TableContainer>
               <Table>
@@ -195,7 +193,7 @@ const getStatusColor = (status, type) => {
                         onClick={() => handleSort("id")}
                         className="font-semibold"
                       >
-                        Order
+                        Mã đơn
                       </TableSortLabel>
                     </TableCell>
                     <TableCell>
@@ -205,7 +203,7 @@ const getStatusColor = (status, type) => {
                         onClick={() => handleSort("date")}
                         className="font-semibold"
                       >
-                        Date
+                        Ngày đặt
                       </TableSortLabel>
                     </TableCell>
                     <TableCell>
@@ -217,14 +215,14 @@ const getStatusColor = (status, type) => {
                         onClick={() => handleSort("customer")}
                         className="font-semibold"
                       >
-                        Customer
+                        Khách hàng
                       </TableSortLabel>
                     </TableCell>
                     <TableCell className="font-semibold">
-                      Payment status
+                      Trạng thái thanh toán
                     </TableCell>
                     <TableCell className="font-semibold">
-                      Order Status
+                      Trạng thái đơn hàng
                     </TableCell>
                     <TableCell>
                       <TableSortLabel
@@ -235,7 +233,7 @@ const getStatusColor = (status, type) => {
                         onClick={() => handleSort("total")}
                         className="font-semibold"
                       >
-                        Total
+                        Tổng tiền
                       </TableSortLabel>
                     </TableCell>
                   </TableRow>
@@ -254,7 +252,15 @@ const getStatusColor = (status, type) => {
                       </TableCell>
                       <TableCell>
                         <Chip
-                          label={order.paymentStatus}
+                          label={
+                            order.paymentStatus === "paid"
+                              ? "Đã thanh toán"
+                              : order.paymentStatus === "pending"
+                              ? "Chưa thanh toán"
+                              : order.paymentStatus === "unpaid"
+                              ? "Chưa thanh toán"
+                              : order.paymentStatus
+                          }
                           color={getStatusColor(order.paymentStatus, "payment")}
                           size="small"
                           className="font-medium"
@@ -262,7 +268,21 @@ const getStatusColor = (status, type) => {
                       </TableCell>
                       <TableCell>
                         <Chip
-                          label={order.deliveryStatus}
+                          label={
+                            order.deliveryStatus === "processing"
+                              ? "Đang xử lý"
+                              : order.deliveryStatus === "ready"
+                              ? "Sẵn sàng"
+                              : order.deliveryStatus === "shipped"
+                              ? "Đã gửi"
+                              : order.deliveryStatus === "delivered"
+                              ? "Đã giao"
+                              : order.deliveryStatus === "received"
+                              ? "Đã nhận"
+                              : order.deliveryStatus === "cancelled"
+                              ? "Đã hủy"
+                              : order.deliveryStatus
+                          }
                           color={getStatusColor(order.deliveryStatus, "order")}
                           size="small"
                           className="font-medium"
@@ -278,10 +298,10 @@ const getStatusColor = (status, type) => {
             </TableContainer>
           </Paper>
 
-          {/* Pagination */}
+          {/* Phân trang */}
           <div className="flex justify-between items-center mt-6">
             <Typography variant="body2" className="text-gray-600">
-              {filteredOrders.length} Results
+              {filteredOrders.length} kết quả
             </Typography>
             <Pagination
               count={totalPages}

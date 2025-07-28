@@ -7,7 +7,7 @@ const RootLayout = () => {
     <>
       <div className="min-h-screen flex flex-col">
         <Header />
-        <main className="flex-1 flex items-start justify-center bg-gray-50 py-2">
+        <main className="flex-1 flex items-start justify-center bg-gray-50 ">
           <Outlet />
         </main>
         <Footer />
