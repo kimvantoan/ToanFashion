@@ -20,7 +20,6 @@ import {
   LocalOffer as CouponIcon,
   LocalShipping,
 } from "@mui/icons-material";
-import Layout from "../../components/Layout";
 import { useNavigate } from "react-router-dom";
 import {
   fetchVouchers,
@@ -142,7 +141,6 @@ const Voucher = () => {
   };
 
   return (
-    <Layout>
       <div className="w-full max-w-7xl mx-auto p-6 bg-white">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
@@ -356,7 +354,6 @@ const Voucher = () => {
           </div>
         </div>
       </div>
-    </Layout>
   );
 };
 

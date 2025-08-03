@@ -1,8 +1,6 @@
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import GroupsIcon from "@mui/icons-material/Groups";
-import TrendingUpIcon from "@mui/icons-material/TrendingUp";
-import Layout from "../components/Layout";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProducts } from "../features/product/productSlice";
 import React, { useEffect } from "react";
@@ -53,7 +51,6 @@ const Dashboard = () => {
     dispatch(getAllUsers());
   }, [dispatch]);
   return (
-    <Layout>
       <div className="space-y-3">
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-3">
@@ -340,7 +337,6 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
-    </Layout>
   );
 };
 

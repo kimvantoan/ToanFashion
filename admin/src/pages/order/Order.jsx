@@ -19,7 +19,6 @@ import {
   TableSortLabel,
 } from "@mui/material";
 import { Search } from "@mui/icons-material";
-import Layout from "../../components/Layout";
 
 import { useDispatch, useSelector } from "react-redux";
 import { fetchOrders } from "../../features/order/orderSlice";
@@ -126,7 +125,6 @@ const getStatusColor = (status, type) => {
   const navigate = useNavigate();
 
   return (
-    <Layout>
       <div className="p-6 bg-gray-50 min-h-screen">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
@@ -314,7 +312,6 @@ const getStatusColor = (status, type) => {
           </div>
         </div>
       </div>
-    </Layout>
   );
 };
 

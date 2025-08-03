@@ -27,7 +27,6 @@ import {
   Edit,
   Delete,
 } from "@mui/icons-material";
-import Layout from "../../components/Layout";
 import { useNavigate } from "react-router-dom";
 import { fetchProducts } from "../../features/product/productSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -117,7 +116,6 @@ const Products = () => {
   const navigate = useNavigate();
 
   return (
-    <Layout>
       <div className="p-6 bg-gray-50 min-h-screen">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
@@ -307,7 +305,6 @@ const Products = () => {
           </MenuItem>
         </Menu>
       </div>
-    </Layout>
   );
 };
 

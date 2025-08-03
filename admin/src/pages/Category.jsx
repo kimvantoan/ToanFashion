@@ -20,7 +20,6 @@ import {
   Edit as EditIcon,
 } from "@mui/icons-material";
 import { useEffect, useState } from "react";
-import Layout from "../components/Layout";
 import { useDispatch, useSelector } from "react-redux";
 import {
   createCategory,
@@ -113,7 +112,7 @@ const Category = () => {
   };
 
   return (
-    <Layout>
+    <>
       <div className="min-h-screen bg-gray-50 p-4 md:p-6 lg:p-8">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
@@ -299,7 +298,7 @@ const Category = () => {
           </DialogActions>
         </Dialog>
       </div>
-    </Layout>
+    </>
   );
 };
 
