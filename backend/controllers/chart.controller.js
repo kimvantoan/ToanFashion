@@ -10,7 +10,10 @@ export const getMonthlyRevenue = async (req, res) => {
             $gte: new Date(`${currentYear}-01-01T00:00:00.000Z`),
             $lte: new Date(`${currentYear}-12-31T23:59:59.999Z`),
           },
-          paymentStatus: "paid",
+          $or: [
+            { paymentStatus: "paid" },
+            { deliveryStatus: "delivered" },
+          ],
         },
       },
       {
@@ -51,6 +54,7 @@ export const getMonthlyRevenue = async (req, res) => {
   }
 };
 
+
 export const getOrderStatusStats = async (req, res) => {
   try {
     const stats = await Order.aggregate([
@@ -69,7 +73,6 @@ export const getOrderStatusStats = async (req, res) => {
 
     res.json(result);
   } catch (error) {
-    console.error("Order status stats error:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };

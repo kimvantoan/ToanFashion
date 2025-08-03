@@ -147,13 +147,6 @@ const Products = () => {
               }}
             />
           </div>
-          <Button
-            variant="outlined"
-            startIcon={<FilterList />}
-            className="text-gray-600 border-gray-300"
-          >
-            Bộ lọc
-          </Button>
         </div>
 
         {/* Products Table */}
@@ -182,9 +175,6 @@ const Products = () => {
                     >
                       Giá bán
                     </TableSortLabel>
-                  </TableCell>
-                  <TableCell className="font-semibold text-gray-700">
-                    Đánh giá
                   </TableCell>
                   <TableCell className="font-semibold text-gray-700">
                     Thương hiệu
@@ -238,14 +228,6 @@ const Products = () => {
                               {formatPrice(product.discount)}
                             </span>
                           )}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-1">
-                          <span>{product.rating.toFixed(1)}</span>
-                          <span className="text-sm text-gray-500">
-                            ({product.numReviews} lượt)
-                          </span>
                         </div>
                       </TableCell>
                       <TableCell>

@@ -7,5 +7,7 @@ const userAPI = {
   logout: () => axiosClient.post(API_ENDPOINTS.auth.logout),
   loginStatus: () => axiosClient.get(API_ENDPOINTS.auth.loginStatus),
   getAllUsers: () => axiosClient.get(API_ENDPOINTS.auth.allUser),
+  getUserById: (userId) =>
+    axiosClient.get(API_ENDPOINTS.auth.getUserById.replace(':id', userId)),
 };
 export default userAPI;

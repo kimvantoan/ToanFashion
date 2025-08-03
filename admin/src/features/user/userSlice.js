@@ -44,11 +44,21 @@ export const getAllUsers = createAsyncThunk('user/getAllUsers', async (_, { reje
     return rejectWithValue(err.response?.data || err.message);
   }
 });
+
+export const getUserById = createAsyncThunk('user/getUserById', async (userId, { rejectWithValue }) => {
+  try {
+    const res = await userAPI.getUserById(userId);
+    return res.data;
+  } catch (err) {
+    return rejectWithValue(err.response?.data || err.message);
+  }
+});
 const userSlice = createSlice({
   name: 'user',
   initialState: {
     user: null,
     userList: [],
+    customer:null,
     isAuthenticated: false,
     loading: false,
     error: null,
@@ -116,6 +126,20 @@ const userSlice = createSlice({
       state.status = 'succeeded';
     })
     .addCase(getAllUsers.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload.message || null;
+      state.status = 'failed';
+    })
+    .addCase(getUserById.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    })
+    .addCase(getUserById.fulfilled, (state, action) => {
+      state.loading = false;
+      state.customer = action.payload;
+      state.status = 'succeeded';
+    })
+    .addCase(getUserById.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload.message || null;
       state.status = 'failed';

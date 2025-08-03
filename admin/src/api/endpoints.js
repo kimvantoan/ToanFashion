@@ -5,6 +5,7 @@ const  API_ENDPOINTS = {
         logout: '/user/logout',
         loginStatus: '/user/loginStatus',
         allUser: '/user',
+        getUserById: '/user/:id',
     },
     category: {
         getAll: '/category',

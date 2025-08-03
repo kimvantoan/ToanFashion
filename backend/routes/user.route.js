@@ -8,6 +8,7 @@ import {
   loginStatus,
   loginAdmin,
   getAllUsers,
+  getUserById,
 } from "../controllers/user.controller.js";
 import { protect, admin } from "../middlewares/auth.middleware.js";
 
@@ -21,5 +22,6 @@ router.post("/logout", logoutUser);
 router.get("/profile", protect, getUserProfile);
 router.put("/profile", protect, updateUserProfile);
 router.get("/", protect, admin, getAllUsers);
+router.get("/:id", protect, admin, getUserById ); 
 
 export default router;

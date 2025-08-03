@@ -201,8 +201,6 @@ export const getAllOrders = async (req, res) => {
 
 // Update delivery status
 export const updateDeliveryStatus = async (req, res) => {
-  console.log(req.body);
-
   try {
     const { status } = req.body;
     const order = await Order.findById(req.params.id);

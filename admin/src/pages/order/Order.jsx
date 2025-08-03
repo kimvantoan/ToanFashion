@@ -51,6 +51,14 @@ const Order = () => {
   };
 
   const filteredOrders = useMemo(() => {
+    // Nếu tất cả filter đều là "all" và searchTerm rỗng, trả về toàn bộ orders
+    const isAll =
+      paymentFilter === "all" &&
+      deliveryFilter === "all" &&
+      (!searchTerm || searchTerm.trim() === "");
+
+    if (isAll) return [...orders];
+
     const filtered = orders.filter((order) => {
       const matchesSearch =
         order.userId.username
@@ -94,12 +102,8 @@ const Order = () => {
     });
 
     return filtered;
-  }, [searchTerm, filterStatus, sortField, sortDirection]);
+  }, [searchTerm, filterStatus, sortField, sortDirection, paymentFilter, deliveryFilter]);
 
-  const paginatedOrders = filteredOrders.slice(
-    (page - 1) * rowsPerPage,
-    page * rowsPerPage
-  );
   const totalPages = Math.ceil(filteredOrders.length / rowsPerPage);
 
 const getStatusColor = (status, type) => {
@@ -145,7 +149,7 @@ const getStatusColor = (status, type) => {
               >
                 <MenuItem value="all">Tất cả</MenuItem>
                 <MenuItem value="paid">Đã thanh toán</MenuItem>
-                <MenuItem value="pending">Chưa thanh toán</MenuItem>
+                <MenuItem value="unpaid">Chưa thanh toán</MenuItem>
               </Select>
             </FormControl>
 
@@ -157,9 +161,10 @@ const getStatusColor = (status, type) => {
                 onChange={(e) => setDeliveryFilter(e.target.value)}
               >
                 <MenuItem value="all">Tất cả</MenuItem>
-                <MenuItem value="ready">Sẵn sàng</MenuItem>
-                <MenuItem value="shipped">Đã gửi</MenuItem>
-                <MenuItem value="received">Đã nhận</MenuItem>
+                <MenuItem value="processing">Đang sử lí</MenuItem>
+                <MenuItem value="shipping">Đang giao hàng</MenuItem>
+                <MenuItem value="delivered">Đã nhận</MenuItem>
+                <MenuItem value="cancelled">Đã hủy</MenuItem>
               </Select>
             </FormControl>
             <TextField
@@ -237,7 +242,7 @@ const getStatusColor = (status, type) => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {orders.map((order) => (
+                  {filteredOrders.map((order) => (
                     <TableRow key={`${order._id}`}  onClick={() => navigate(`/order/${order._id}`)} hover>
                       <TableCell className="font-medium text-blue-600">
                         {order._id}

@@ -17,7 +17,8 @@ const EditProduct = lazy(() => import("../pages/product/EditProduct"));
 const Voucher = lazy(() => import("../pages/voucher/Voucher"));
 const AddVoucher = lazy(() => import("../pages/voucher/AddVoucher"));
 const EditVoucher = lazy(() => import("../pages/voucher/EditVoucher"));
-
+const Customer = lazy(() => import("../pages/customer/Customer"));
+const CustomerInfo = lazy(() => import("../pages/customer/CustomerInfo"));
 const withSuspense = (Component) => (
   <Suspense
     fallback={
@@ -49,6 +50,8 @@ const router = createBrowserRouter([
       { path: "vouchers", element: withSuspense(Voucher) },
       { path: "voucher/add", element: withSuspense(AddVoucher) },
       { path: "voucher/edit/:id", element: withSuspense(EditVoucher) },
+      { path: "customers", element: withSuspense(Customer) },
+      { path: "customer/:id", element: withSuspense(CustomerInfo) },
     ],
   },
 ]);
