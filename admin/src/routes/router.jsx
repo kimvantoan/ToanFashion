@@ -4,6 +4,7 @@ import { lazy } from "react";
 import MainLayout from "../components/MainLayout";
 import { Suspense } from "react";
 import { CircularProgress } from "@mui/material";
+import ProtectedRoute from "./ProtectedRoute";
 
 // Dùng lazy load cho các trang
 const Login = lazy(() => import("../pages/Login"));
@@ -40,18 +41,23 @@ const router = createBrowserRouter([
     path: "/",
     element: <MainLayout />,
     children: [
-      { path: "", element: withSuspense(Dashboard) },
-      { path: "categories", element: withSuspense(Category) },
-      { path: "orders", element: withSuspense(Order) },
-      { path: "order/:id", element: withSuspense(OrderDetail) },
-      { path: "products", element: withSuspense(Products) },
-      { path: "add-product", element: withSuspense(AddProduct) },
-      { path: "product/:id", element: withSuspense(EditProduct) },
-      { path: "vouchers", element: withSuspense(Voucher) },
-      { path: "voucher/add", element: withSuspense(AddVoucher) },
-      { path: "voucher/edit/:id", element: withSuspense(EditVoucher) },
-      { path: "customers", element: withSuspense(Customer) },
-      { path: "customer/:id", element: withSuspense(CustomerInfo) },
+      {
+        element: <ProtectedRoute />, 
+        children: [
+          { path: "", element: withSuspense(Dashboard) },
+          { path: "categories", element: withSuspense(Category) },
+          { path: "orders", element: withSuspense(Order) },
+          { path: "order/:id", element: withSuspense(OrderDetail) },
+          { path: "products", element: withSuspense(Products) },
+          { path: "add-product", element: withSuspense(AddProduct) },
+          { path: "product/:id", element: withSuspense(EditProduct) },
+          { path: "vouchers", element: withSuspense(Voucher) },
+          { path: "voucher/add", element: withSuspense(AddVoucher) },
+          { path: "voucher/edit/:id", element: withSuspense(EditVoucher) },
+          { path: "customers", element: withSuspense(Customer) },
+          { path: "customer/:id", element: withSuspense(CustomerInfo) },
+        ],
+      },
     ],
   },
 ]);

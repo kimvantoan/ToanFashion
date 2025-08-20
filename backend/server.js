@@ -4,13 +4,15 @@ import connectDB from "./config/db.js";
 import cookieParser from "cookie-parser";
 import router from "./routes/index.route.js";
 import cors from "cors";
+import { checkPaymentVNPAY } from "./controllers/payment.controller.js";
 dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
-
 // Middleware
 app.use(express.json());
 app.use(cookieParser());
+app.use(express.urlencoded({ extended: true })); 
+
 const allowedOrigins = [process.env.CLIENT_URL, process.env.ADMIN_URL];
 
 app.use(
@@ -29,6 +31,7 @@ app.use(
 
 // Routes
 app.use("/api/v1", router);
+app.get("/payment-return", checkPaymentVNPAY);
 
 connectDB();
 // Start server

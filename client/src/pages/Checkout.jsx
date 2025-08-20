@@ -16,13 +16,13 @@ import {
   MenuItem,
 } from "@mui/material";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
-import BusinessIcon from "@mui/icons-material/Business";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCheckout } from "../features/checkout/checkoutSlice";
 import { useNavigate } from "react-router-dom";
 import { fetchAddresses } from "../features/address/addressSlice";
 import { createOrder } from "../features/order/orderSlice";
+import {createVNPAY} from "../features/payment/paymentSlice";
 export default function Checkout() {
   const checkoutData = JSON.parse(sessionStorage.getItem("checkoutData"));
   const { items, subtotal, finalAmount, discountAmount } = useSelector(
@@ -54,6 +54,31 @@ const handleOrder = async () => {
     navigate("/order-success");
   } catch (error) {
     console.error("Order failed:", error);
+  }
+};
+
+const handleVNPAY = async () => {
+  try {
+    const response = await dispatch(
+      createVNPAY({
+        fromCart: checkoutData.fromCart,
+        productId: checkoutData.productId,
+        color: checkoutData.color,
+        size: checkoutData.size,
+        quantity: checkoutData.quantity,
+        shippingAddress: formData.address,
+        paymentMethod: "VNPAY",
+        voucherCode: formData.code,
+        totalAmount: finalAmount,
+        orderInfo: "Thanh toán đơn hàng ToanFashion",
+      })
+    ).unwrap();
+
+    if (response) {
+      window.location.href = response;
+    }
+  } catch (error) {
+    console.error("VNPAY error:", error);
   }
 };
 
@@ -151,34 +176,6 @@ const handleOrder = async () => {
                         <div className="flex items-center gap-2">
                           <LocalShippingIcon sx={{ fontSize: 20 }} />
                           <span>Thanh toán khi giao hàng (COD)</span>
-                        </div>
-                      }
-                    />
-                  </Paper>
-                  <Paper className="p-4">
-                    <FormControlLabel
-                      value="transfer"
-                      control={<Radio />}
-                      label={
-                        <div className="flex items-center gap-2">
-                          <BusinessIcon sx={{ fontSize: 20 }} />
-                          <span>Chuyển khoản qua ngân hàng</span>
-                        </div>
-                      }
-                    />
-                  </Paper>
-                  <Paper className="p-4">
-                    <FormControlLabel
-                      value="momo"
-                      control={<Radio />}
-                      label={
-                        <div className="flex items-center gap-2">
-                          <div className="w-5 h-5 bg-pink-500 rounded flex items-center justify-center">
-                            <span className="text-white text-xs font-bold">
-                              M
-                            </span>
-                          </div>
-                          <span>Ví MoMo</span>
                         </div>
                       }
                     />
@@ -306,7 +303,11 @@ const handleOrder = async () => {
               Hủy
             </Button>
             <Button
-              onClick={handleOrder}
+              onClick={
+                formData.paymentMethod === "card"
+                  ? handleVNPAY
+                  : handleOrder
+              }
               variant="contained"
               color="error"
               className="px-8"

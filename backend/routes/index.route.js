@@ -10,6 +10,7 @@ import cartRoute from './cart.route.js';
 import wishRoute from './wish.route.js';
 import chatAI from './chatAI.route.js';
 import chart from './chart.route.js';
+import payment from './payment.route.js';
 const router = express.Router();
 
 router.use('/user', userRoute);
@@ -23,4 +24,5 @@ router.use('/address', addressRoute);
 router.use('/wish', wishRoute);
 router.use('/chat', chatAI);
 router.use('/chart', chart);
+router.use('/payment', payment);
 export default router;

@@ -52,6 +52,10 @@ const API_ENDPOINTS = {
   chatbot: {
     sendMessage: "/chat",
   },
+  payment: {
+    createVNPAY: "/payment/create-payment",
+    checkVNPAY: "/payment/check-payment-vnpay",
+  },
 };
 
 export default API_ENDPOINTS;

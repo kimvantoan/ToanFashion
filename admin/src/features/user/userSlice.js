@@ -76,13 +76,11 @@ const userSlice = createSlice({
         state.loading = false;
         state.user = action.payload;
         state.isAuthenticated = true;
-        state.status = 'succeeded';
       })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message || null;
         state.fieldErrors = action.payload.fieldErrors || {};
-        state.status = 'failed';
       })
       // Logout
       .addCase(logout.pending, (state) => {
@@ -93,12 +91,10 @@ const userSlice = createSlice({
         state.loading = false;
         state.user = null;
         state.isAuthenticated = false;
-        state.status = 'succeeded';
       })
       .addCase(logout.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message || null;
-        state.status = 'failed';
       })
     // Login Status
     .addCase(loginStatus.pending, (state) => {
@@ -109,12 +105,10 @@ const userSlice = createSlice({
       state.loading = false;
       state.user = action.payload;
       state.isAuthenticated = true;
-      state.status = 'succeeded'; 
     })
     .addCase(loginStatus.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload.message || null;
-      state.status = 'failed';
     })
     .addCase(getAllUsers.pending, (state) => {
       state.loading = true;
@@ -123,12 +117,10 @@ const userSlice = createSlice({
     .addCase(getAllUsers.fulfilled, (state, action) => {
       state.loading = false;
       state.userList = action.payload;
-      state.status = 'succeeded';
     })
     .addCase(getAllUsers.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload.message || null;
-      state.status = 'failed';
     })
     .addCase(getUserById.pending, (state) => {
       state.loading = true;
@@ -137,12 +129,10 @@ const userSlice = createSlice({
     .addCase(getUserById.fulfilled, (state, action) => {
       state.loading = false;
       state.customer = action.payload;
-      state.status = 'succeeded';
     })
     .addCase(getUserById.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload.message || null;
-      state.status = 'failed';
     });
   }  
 });

@@ -4,12 +4,11 @@ import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 import Inventory2Icon from "@mui/icons-material/Inventory2";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import GroupIcon from "@mui/icons-material/Group";
-import BarChartIcon from "@mui/icons-material/BarChart";
 import StarIcon from "@mui/icons-material/Star";
-import MailIcon from "@mui/icons-material/Mail";
-import PersonIcon from "@mui/icons-material/Person";
-import SettingsIcon from "@mui/icons-material/Settings";
+import LogoutIcon from "@mui/icons-material/Logout";
 import { NavLink } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logout } from "../features/user/userSlice";
 const sections = [
   {
     id: "dashboard",
@@ -51,7 +50,10 @@ const sections = [
 
 const Sidebar = () => {
   const [activeItem, setActiveItem] = useState("Dashboard");
-
+  const dispatch = useDispatch();
+  const handleLogout = () => {
+    dispatch(logout());
+  };
   const handleItemClick = (item) => {
     setActiveItem(item);
   };
@@ -82,6 +84,19 @@ const Sidebar = () => {
                 </NavLink>
               </li>
             ))}
+            <li>
+              <NavLink
+                onClick={handleLogout}
+                className={({}) =>
+                  `flex items-center px-4 py-2 cursor-pointer hover:bg-gray-700 `
+                }
+              >
+                <span className="mr-3">
+                  <LogoutIcon fontSize="small" />
+                </span>
+                <span>Đăng xuất</span>
+              </NavLink>
+            </li>
           </ul>
         </nav>
       </div>

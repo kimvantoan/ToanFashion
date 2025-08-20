@@ -4,6 +4,7 @@ import { lazy, Suspense } from "react";
 // Layout & route wrapper
 import ProtectedRoute from "./ProtectedRoute";
 import RootLayout from "../layout/RootLayout";
+import CircularProgress from "@mui/material/CircularProgress";
 
 // Lazy-loaded pages
 const Home = lazy(() => import("../pages/Home"));
@@ -17,7 +18,7 @@ const Search = lazy(() => import("../pages/Search"));
 const Checkout = lazy(() => import("../pages/Checkout"));
 const OrderSuccess = lazy(() => import("../components/OrderSuccess"));
 const NotFound404 = lazy(() => import("../pages/NotFound404"));
-import CircularProgress from "@mui/material/CircularProgress";
+const PaymentReturn = lazy(() => import("../pages/PaymentReturn"));
 const withSuspense = (Component) => (
   <Suspense
     fallback={
@@ -49,6 +50,7 @@ const router = createBrowserRouter([
       { path: "/login", element: withSuspense(<Login />) },
       { path: "/register", element: withSuspense(<Register />) },
       { path: "*", element: <Navigate to="/" replace /> },
+      { path: "/payment-return", element: withSuspense(<PaymentReturn />) },
     ],
   },
   {

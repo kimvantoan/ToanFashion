@@ -9,8 +9,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import slugify from "slugify";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
-import Button from '@mui/material/Button';
-
+import Button from "@mui/material/Button";
+import { toast } from "react-toastify";
 const BRANDS = [
   { _id: "nike", name: "Nike" },
   { _id: "adidas", name: "Adidas" },
@@ -42,7 +42,7 @@ const EditProduct = () => {
   }, [dispatch, id]);
 
   const { categories } = useSelector((state) => state.category);
-  const { product,loading } = useSelector((state) => state.product);
+  const { product, loading } = useSelector((state) => state.product);
   // Xử lý chọn file ảnh mới
   const handleFileSelect = (e) => {
     const files = Array.from(e.target.files || []);
@@ -236,7 +236,15 @@ const EditProduct = () => {
       "oldImages",
       JSON.stringify(images.filter((i) => i.isOld).map((i) => i.preview))
     );
-    dispatch(updateProduct({ id, data: formData }));
+    dispatch(updateProduct({ id, data: formData }))
+      .unwrap()
+      .then(() => {
+        toast.success("Sửa sản phẩm thành công!");
+        navigate("/products");
+      })
+      .catch((err) => {
+        toast.error(err?.message || "Sửa sản phẩm thất bại!");
+      });
   };
 
   return (
@@ -256,7 +264,7 @@ const EditProduct = () => {
             </h1>
           </div>
           <div className="flex space-x-3">
-            <button className="px-4 py-2 border border-gray-300 rounded-button text-gray-700 bg-white hover:bg-gray-50 cursor-pointer whitespace-nowrap">
+            <button onClick={() => navigate(-1)} className="px-4 py-2 border border-gray-300 rounded-button text-gray-700 bg-white hover:bg-gray-50 cursor-pointer whitespace-nowrap">
               Hủy
             </button>
             <Button
@@ -289,7 +297,7 @@ const EditProduct = () => {
                     id="productName"
                     value={productName}
                     onChange={handleNameChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300"
                     placeholder="Nhập tên sản phẩm"
                   />
                 </div>
@@ -305,7 +313,7 @@ const EditProduct = () => {
                     id="productSlug"
                     value={productSlug}
                     onChange={(e) => setProductSlug(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300"
                     placeholder="duong-dan-san-pham"
                   />
                 </div>
@@ -321,7 +329,7 @@ const EditProduct = () => {
                     value={productDescription}
                     onChange={(e) => setProductDescription(e.target.value)}
                     rows={4}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300"
                     placeholder="Nhập mô tả sản phẩm"
                   ></textarea>
                 </div>
@@ -329,7 +337,9 @@ const EditProduct = () => {
             </div>
             {/* Ảnh sản phẩm */}
             <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-lg font-medium text-gray-900 mb-4">Ảnh sản phẩm</h2>
+              <h2 className="text-lg font-medium text-gray-900 mb-4">
+                Ảnh sản phẩm
+              </h2>
               <input
                 type="file"
                 id="fileInput"
@@ -410,7 +420,9 @@ const EditProduct = () => {
             </div>
             {/* Giá sản phẩm */}
             <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-lg font-medium text-gray-900 mb-4">Giá sản phẩm</h2>
+              <h2 className="text-lg font-medium text-gray-900 mb-4">
+                Giá sản phẩm
+              </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
                   <label
@@ -422,7 +434,7 @@ const EditProduct = () => {
                   <input
                     type="number"
                     id="basePrice"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300"
                     placeholder="Nhập giá gốc"
                     value={basePrice}
                     onChange={(e) => setBasePrice(e.target.value)}
@@ -438,7 +450,7 @@ const EditProduct = () => {
                   <input
                     type="number"
                     id="discountPrice"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300"
                     placeholder="Giá sau khuyến mãi"
                     value={discountPrice}
                     onChange={(e) => setDiscountPrice(e.target.value)}
@@ -519,7 +531,7 @@ const EditProduct = () => {
                                   )
                                 );
                               }}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                              className="w-full px-3 py-2 border border-gray-300"
                               placeholder="VD: Xanh dương"
                             />
                           </div>
@@ -565,7 +577,7 @@ const EditProduct = () => {
                                         e.target.value
                                       )
                                     }
-                                    className="w-24 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                    className="w-24 px-3 py-2 border border-gray-300"
                                     placeholder="Tồn kho"
                                     min="0"
                                   />
@@ -617,10 +629,12 @@ const EditProduct = () => {
             </div>
             {/* Thương hiệu */}
             <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-lg font-medium text-gray-900 mb-4">Thương hiệu</h2>
+              <h2 className="text-lg font-medium text-gray-900 mb-4">
+                Thương hiệu
+              </h2>
               <div>
                 <select
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300"
                   value={selectedBrand}
                   onChange={(e) => setSelectedBrand(e.target.value)}
                 >

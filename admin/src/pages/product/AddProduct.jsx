@@ -113,6 +113,59 @@ const AddProduct = () => {
 
   const handleCreate = (e) => {
     e.preventDefault();
+
+    // Validate
+    if (!productName.trim()) {
+      toast.error("Vui lòng nhập tên sản phẩm!");
+      return;
+    }
+    if (!productSlug.trim()) {
+      toast.error("Vui lòng nhập đường dẫn (slug)!");
+      return;
+    }
+    if (!selectedCategory) {
+      toast.error("Vui lòng chọn danh mục!");
+      return;
+    }
+    if (!selectedBrand) {
+      toast.error("Vui lòng chọn thương hiệu!");
+      return;
+    }
+    if (!basePrice || isNaN(Number(basePrice)) || Number(basePrice) <= 0) {
+      toast.error("Vui lòng nhập giá gốc hợp lệ!");
+      return;
+    }
+    if (discountPrice && (isNaN(Number(discountPrice)) || Number(discountPrice) < 0)) {
+      toast.error("Giá khuyến mãi không hợp lệ!");
+      return;
+    }
+    if (images.length === 0) {
+      toast.error("Vui lòng thêm ít nhất 1 ảnh sản phẩm!");
+      return;
+    }
+    if (hasVariants) {
+      for (const variant of variants) {
+        if (!variant.color.trim()) {
+          toast.error("Vui lòng nhập màu sắc cho tất cả biến thể!");
+          return;
+        }
+        if (variant.selectedSizes.length === 0) {
+          toast.error("Vui lòng chọn size cho tất cả biến thể!");
+          return;
+        }
+        for (const size of variant.selectedSizes) {
+          if (
+            variant.sizeStocks[size] === undefined ||
+            isNaN(Number(variant.sizeStocks[size])) ||
+            Number(variant.sizeStocks[size]) < 0
+          ) {
+            toast.error("Tồn kho phải là số không âm cho tất cả size!");
+            return;
+          }
+        }
+      }
+    }
+
     setIsSubmitting(true);
     const formattedVariants = variants.map((variant) => ({
       color: variant.color,
@@ -208,7 +261,7 @@ const AddProduct = () => {
             </h1>
           </div>
           <div className="flex space-x-3">
-            <button className="px-4 py-2 border border-gray-300 rounded-button text-gray-700 bg-white hover:bg-gray-50 cursor-pointer whitespace-nowrap">
+            <button onClick={() => navigate(-1)} className="px-4 py-2 border border-gray-300 rounded-button text-gray-700 bg-white hover:bg-gray-50 cursor-pointer whitespace-nowrap">
               Hủy
             </button>
             <Button variant="contained" loading={loading} onClick={handleCreate} className="px-4 py-2 bg-blue-600 text-white rounded-button hover:bg-blue-700 cursor-pointer whitespace-nowrap">
@@ -236,7 +289,7 @@ const AddProduct = () => {
                     id="productName"
                     value={productName}
                     onChange={handleNameChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Nhập tên sản phẩm"
                   />
                 </div>
@@ -252,7 +305,7 @@ const AddProduct = () => {
                     id="productSlug"
                     value={productSlug}
                     onChange={(e) => setProductSlug(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="duong-dan-san-pham"
                   />
                 </div>
@@ -268,7 +321,7 @@ const AddProduct = () => {
                     value={productDescription}
                     onChange={(e) => setProductDescription(e.target.value)}
                     rows={4}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Nhập mô tả sản phẩm"
                   ></textarea>
                 </div>
@@ -369,7 +422,7 @@ const AddProduct = () => {
                   <input
                     type="number"
                     id="basePrice"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Nhập giá gốc"
                     value={basePrice}
                     onChange={(e) => setBasePrice(e.target.value)}
@@ -385,7 +438,7 @@ const AddProduct = () => {
                   <input
                     type="number"
                     id="discountPrice"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Giá sau khuyến mãi"
                     value={discountPrice}
                     onChange={(e) => setDiscountPrice(e.target.value)}
@@ -466,7 +519,7 @@ const AddProduct = () => {
                                   )
                                 );
                               }}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                              className="w-full px-3 py-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                               placeholder="VD: Xanh dương"
                             />
                           </div>
@@ -512,7 +565,7 @@ const AddProduct = () => {
                                         e.target.value
                                       )
                                     }
-                                    className="w-24 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                    className="w-24 px-3 py-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                                     placeholder="Tồn kho"
                                     min="0"
                                   />
@@ -567,7 +620,7 @@ const AddProduct = () => {
               <h2 className="text-lg font-medium text-gray-900 mb-4">Thương hiệu</h2>
               <div>
                 <select
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                   value={selectedBrand}
                   onChange={(e) => setSelectedBrand(e.target.value)}
                 >

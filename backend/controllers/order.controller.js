@@ -116,7 +116,7 @@ export const createOrderUnified = async (req, res) => {
       items: orderItems,
       shippingAddress,
       paymentMethod: paymentMethod || "COD",
-      paymentStatus: "unpaid",
+      paymentStatus: req.body.paymentStatus === "paid" ? "paid" : "unpaid",
       deliveryStatus: "processing",
       totalAmount,
       voucher: appliedVoucher?._id || undefined,
@@ -146,7 +146,7 @@ export const createOrderUnified = async (req, res) => {
       await Cart.deleteOne({ userId });
     }
     sendOrder(user.email, order);
-    res.status(201).json(order);
+    res.status(201).json({order,status: "success", message: "Đặt hàng thành công"});
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Không thể tạo đơn hàng" });

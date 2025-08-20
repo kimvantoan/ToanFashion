@@ -9,6 +9,7 @@ import wishReducer from "../features/wish/wishSlice";
 import addressReducer from "../features/address/addressSlice";
 import orderReducer from "../features/order/orderSlice";
 import chatbotReducer from "../features/chatbot/chatbotSlice";
+import paymentReducer from "../features/payment/paymentSlice"; 
 export const store = configureStore({
   reducer: {
     user: userReducer,
@@ -21,6 +22,7 @@ export const store = configureStore({
     address: addressReducer,
     order: orderReducer,
     chatbot: chatbotReducer,
+    payment: paymentReducer, 
   },
 });
 

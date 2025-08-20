@@ -14,11 +14,11 @@ import { useNavigate } from "react-router-dom";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { loading, fieldErrors,status } = useSelector((state) => state.user);
+  const { loading, fieldErrors,user } = useSelector((state) => state.user);
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+   const navigate = useNavigate()
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(login({ email, password }));
@@ -33,11 +33,11 @@ const Login = () => {
     }
   }, [fieldErrors]);
     useEffect(() => {
-      if (status === "succeeded") {
-        navigate("/");
-      }
-    }, [status, navigate]);
-  
+    if (user) {
+      navigate("/");
+    }
+  }, [user]);
+
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <Container maxWidth="sm">
